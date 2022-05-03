@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="7a091b84-42a2-4966-937e-8409e68ac26b" name="Default" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectId" id="1ObqOLKkVgswHXnjbCcqq6GZ9SZ" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\vcpse\Desktop\Search_Projecto\src" />
+      <recent name="D:\ESCOLA\IA\Search_Projecto\src\mummymaze" />
+      <recent name="D:\ESCOLA\IA\Search_Projecto\src\images" />
+      <recent name="C:\Users\Anabela\IdeaProjects\Search\src" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="gui" />
+      <recent name="eightpuzzle" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true">
+      <option name="ALTERNATIVE_JRE_PATH" value="17" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="gui.Main" />
+      <module name="untitled104" />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7a091b84-42a2-4966-937e-8409e68ac26b" name="Default" comment="" />
+      <created>1521195166059</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1521195166059</updated>
+      <workItem from="1582565107338" duration="11255000" />
+      <workItem from="1583168216627" duration="1607000" />
+      <workItem from="1583183963137" duration="5717000" />
+      <workItem from="1583255433033" duration="1164000" />
+      <workItem from="1614862104320" duration="1238000" />
+      <workItem from="1615309114932" duration="3287000" />
+      <workItem from="1615363748117" duration="3674000" />
+      <workItem from="1615905155525" duration="12625000" />
+      <workItem from="1615939203426" duration="47000" />
+      <workItem from="1615939285171" duration="1225000" />
+      <workItem from="1615982254076" duration="2220000" />
+      <workItem from="1616151480376" duration="4795000" />
+      <workItem from="1616173592479" duration="5095000" />
+      <workItem from="1616192780973" duration="103000" />
+      <workItem from="1616193463456" duration="8528000" />
+      <workItem from="1616454526095" duration="4926000" />
+      <workItem from="1616581685651" duration="1475000" />
+      <workItem from="1616709690693" duration="32000" />
+      <workItem from="1616711233705" duration="1500000" />
+      <workItem from="1646695406185" duration="667000" />
+      <workItem from="1648500465242" duration="674000" />
+      <workItem from="1649112440091" duration="375000" />
+      <workItem from="1650908521009" duration="7733000" />
+      <workItem from="1651527208800" duration="652000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
