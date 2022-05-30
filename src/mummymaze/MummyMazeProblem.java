@@ -9,7 +9,6 @@ import java.util.List;
 public class MummyMazeProblem extends Problem<MummyMazeState> {
 
     protected List<Action> actions;
-    private final MummyMazeState goalState;
 
     public MummyMazeProblem(MummyMazeState initialState) {
         super(initialState);
@@ -18,13 +17,15 @@ public class MummyMazeProblem extends Problem<MummyMazeState> {
             add(new ActionUp());
             add(new ActionRight());
             add(new ActionLeft());
+            add(new ActionStand());
         }};
-        goalState = new MummyMazeState(MummyMazeState.GOAL_MATRIX);
     }
 
     @Override
     public List<Action<MummyMazeState>> getActions(MummyMazeState state) {
         List<Action<MummyMazeState>> possibleActions = new LinkedList<>();
+
+
 
         for (Action action : actions) {
             if (action.isValid(state)) {
@@ -43,15 +44,11 @@ public class MummyMazeProblem extends Problem<MummyMazeState> {
 
     @Override
     public boolean isGoal(MummyMazeState state) {
-        return goalState.equals(state);
+        return state.checkGoal();
     }
 
     @Override
     public double computePathCost(List<Action> path) {
         return path.size();
-    }
-
-    public MummyMazeState getGoalState() {
-        return goalState;
     }
 }
