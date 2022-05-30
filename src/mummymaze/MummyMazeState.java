@@ -181,11 +181,11 @@ public class MummyMazeState extends State implements Cloneable {
 
     public void moveNPC(String direction){
         if(!mumias.isEmpty()){
-            moveMumia(direction);
-            moveMumia(direction);
+            moveMumiaEscorpiao(direction, mumias);
+            moveMumiaEscorpiao(direction, mumias);
         }
         if(!escorpioes.isEmpty()){
-            moveEscorpiao(direction);
+            moveMumiaEscorpiao(direction, escorpioes);
         }
         if(!mumiasVermelhas.isEmpty()){
             moveMumiaVermelha(direction);
@@ -193,8 +193,130 @@ public class MummyMazeState extends State implements Cloneable {
         }
     }
 
-    public void moveMumia(String direction){
-        for (Coordinates mummy: mumias){
+    public void moveMumiaEscorpiao(String direction, LinkedList<Coordinates> npcs){
+        for (Coordinates npc: npcs){
+            int lineNpc = npc.getLine();
+            int columnNpc = npc.getColumn();
+            int lineHero = hero.getLine();
+            int columnHero = hero.getColumn();
+            switch(direction){
+                case "up":
+                    if(lineHero<lineNpc){
+                        if(canMoveEntityUp(npc, false)){
+                            matrix[lineNpc-2][columnNpc] = 'M';
+                            matrix[lineNpc][columnNpc] = '.';
+                            npc.setLine(lineNpc-2);
+                        }
+                    } else if(columnHero>columnNpc){
+                        if(canMoveEntityRight(npc, false)){
+                            matrix[lineNpc][columnNpc+2] = 'M';
+                            matrix[lineNpc][columnNpc] = '.';
+                            npc.setColumn(columnNpc+2);
+                        }
+                    } else if(columnHero<lineNpc){
+                        if(canMoveEntityLeft(npc, false)){
+                            matrix[lineNpc][columnNpc-2] = 'M';
+                            matrix[lineNpc][columnNpc] = '.';
+                            npc.setColumn(columnNpc-2);
+                        }
+                    }
+                    break;
+                case "down":
+                    if(lineHero>lineNpc){
+                        if(canMoveEntityDown(npc, false)){
+                            matrix[lineNpc+2][columnNpc] = 'M';
+                            matrix[lineNpc][columnNpc] = '.';
+                            npc.setLine(lineNpc+2);
+                        }
+                    } else if(columnHero>columnNpc){
+                        if(canMoveEntityRight(npc, false)){
+                            matrix[lineNpc][columnNpc+2] = 'M';
+                            matrix[lineNpc][columnNpc] = '.';
+                            npc.setColumn(columnNpc+2);
+                        }
+                    } else if(columnHero<lineNpc){
+                        if(canMoveEntityLeft(npc, false)){
+                            matrix[lineNpc][columnNpc-2] = 'M';
+                            matrix[lineNpc][columnNpc] = '.';
+                            npc.setColumn(columnNpc-2);
+                        }
+                    }
+                    break;
+                case "left":
+                    if(columnHero<lineNpc){
+                        if(canMoveEntityLeft(npc, false)){
+                            matrix[lineNpc][columnNpc-2] = 'M';
+                            matrix[lineNpc][columnNpc] = '.';
+                            npc.setColumn(columnNpc-2);
+                        }
+                    } else if(lineHero<lineNpc){
+                        if(canMoveEntityUp(npc, false)){
+                            matrix[lineNpc-2][columnNpc] = 'M';
+                            matrix[lineNpc][columnNpc] = '.';
+                            npc.setLine(lineNpc-2);
+                        }
+                    } else if(lineHero>lineNpc){
+                        if(canMoveEntityDown(npc, false)){
+                            matrix[lineNpc+2][columnNpc] = 'M';
+                            matrix[lineNpc][columnNpc] = '.';
+                            npc.setLine(lineNpc+2);
+                        }
+                    }
+                    break;
+                case "right":
+                    if(columnHero>columnNpc){
+                        if(canMoveEntityRight(npc, false)){
+                            matrix[lineNpc][columnNpc+2] = 'M';
+                            matrix[lineNpc][columnNpc] = '.';
+                            npc.setColumn(columnNpc+2);
+                        }
+                    } else if(lineHero<lineNpc){
+                        if(canMoveEntityUp(npc, false)){
+                            matrix[lineNpc-2][columnNpc] = 'M';
+                            matrix[lineNpc][columnNpc] = '.';
+                            npc.setLine(lineNpc-2);
+                        }
+                    } else if(lineHero>lineNpc){
+                        if(canMoveEntityDown(npc, false)){
+                            matrix[lineNpc+2][columnNpc] = 'M';
+                            matrix[lineNpc][columnNpc] = '.';
+                            npc.setLine(lineNpc+2);
+                        }
+                    }
+                    break;
+                case "stand":
+                    if(columnHero<columnNpc){
+                        if(canMoveEntityLeft(npc, false)){
+                            matrix[lineNpc][columnNpc-2] = 'M';
+                            matrix[lineNpc][columnNpc] = '.';
+                            npc.setColumn(columnNpc-2);
+                        }
+                    } else if(columnHero>columnNpc){
+                        if(canMoveEntityRight(npc, false)){
+                            matrix[lineNpc][columnNpc+2] = 'M';
+                            matrix[lineNpc][columnNpc] = '.';
+                            npc.setColumn(columnNpc+2);
+                        }
+                    } else if(lineHero>lineNpc){
+                        if(canMoveEntityDown(npc, false)){
+                            matrix[lineNpc+2][columnNpc] = 'M';
+                            matrix[lineNpc][columnNpc] = '.';
+                            npc.setLine(lineNpc+2);
+                        }
+                    } else if(lineHero<lineNpc){
+                        if(canMoveEntityUp(npc, false)){
+                            matrix[lineNpc-2][columnNpc] = 'M';
+                            matrix[lineNpc][columnNpc] = '.';
+                            npc.setLine(lineNpc-2);
+                        }
+                    }
+                    break;
+            }
+        }
+    }
+
+    public void moveMumiaVermelha(String direction){
+        for (Coordinates mummy: mumiasVermelhas){
             int lineMummy = mummy.getLine();
             int columnMummy = mummy.getColumn();
             int lineHero = hero.getLine();
@@ -203,7 +325,7 @@ public class MummyMazeState extends State implements Cloneable {
                 case "up":
                     if(lineHero<lineMummy){
                         if(canMoveEntityUp(mummy, false)){
-                            matrix[lineMummy-2][columnMummy] = 'M';
+                            matrix[lineMummy-2][columnMummy] = 'V';
                             matrix[lineMummy][columnMummy] = '.';
                             mummy.setLine(lineMummy-2);
                         }
@@ -212,7 +334,7 @@ public class MummyMazeState extends State implements Cloneable {
                 case "down":
                     if(lineHero>lineMummy){
                         if(canMoveEntityDown(mummy, false)){
-                            matrix[lineMummy+2][columnMummy] = 'M';
+                            matrix[lineMummy+2][columnMummy] = 'V';
                             matrix[lineMummy][columnMummy] = '.';
                             mummy.setLine(lineMummy+2);
                         }
@@ -221,7 +343,7 @@ public class MummyMazeState extends State implements Cloneable {
                 case "left":
                     if(columnHero<columnMummy){
                         if(canMoveEntityLeft(mummy, false)){
-                            matrix[lineMummy][columnMummy-2] = 'M';
+                            matrix[lineMummy][columnMummy-2] = 'V';
                             matrix[lineMummy][columnMummy] = '.';
                             mummy.setColumn(columnMummy-2);
                         }
@@ -230,49 +352,41 @@ public class MummyMazeState extends State implements Cloneable {
                 case "right":
                     if(columnHero>columnMummy){
                         if(canMoveEntityRight(mummy, false)){
-                            matrix[lineMummy][columnMummy+2] = 'M';
+                            matrix[lineMummy][columnMummy+2] = 'V';
                             matrix[lineMummy][columnMummy] = '.';
                             mummy.setColumn(columnMummy+2);
                         }
                     }
                     break;
                 case "stand":
-                    if(columnHero<columnMummy){
-                        if(canMoveEntityLeft(mummy, false)){
-                            matrix[lineMummy][columnMummy-2] = 'M';
-                            matrix[lineMummy][columnMummy] = '.';
-                            mummy.setColumn(columnMummy-2);
-                        }
-                    } else if(columnHero>columnMummy){
-                        if(canMoveEntityRight(mummy, false)){
-                            matrix[lineMummy][columnMummy+2] = 'M';
-                            matrix[lineMummy][columnMummy] = '.';
-                            mummy.setColumn(columnMummy+2);
-                        }
-                    } else if(lineHero>lineMummy){
+                    if(lineHero>lineMummy){
                         if(canMoveEntityDown(mummy, false)){
-                            matrix[lineMummy+2][columnMummy] = 'M';
+                            matrix[lineMummy+2][columnMummy] = 'V';
                             matrix[lineMummy][columnMummy] = '.';
                             mummy.setLine(lineMummy+2);
                         }
                     } else if(lineHero<lineMummy){
                         if(canMoveEntityUp(mummy, false)){
-                            matrix[lineMummy-2][columnMummy] = 'M';
+                            matrix[lineMummy-2][columnMummy] = 'V';
                             matrix[lineMummy][columnMummy] = '.';
                             mummy.setLine(lineMummy-2);
+                        }
+                    } else if(columnHero<columnMummy){
+                        if(canMoveEntityLeft(mummy, false)){
+                            matrix[lineMummy][columnMummy-2] = 'V';
+                            matrix[lineMummy][columnMummy] = '.';
+                            mummy.setColumn(columnMummy-2);
+                        }
+                    } else if(columnHero>columnMummy){
+                        if(canMoveEntityRight(mummy, false)){
+                            matrix[lineMummy][columnMummy+2] = 'V';
+                            matrix[lineMummy][columnMummy] = '.';
+                            mummy.setColumn(columnMummy+2);
                         }
                     }
                     break;
             }
         }
-    }
-
-    public void moveEscorpiao(String direction){
-
-    }
-
-    public void moveMumiaVermelha(String direction){
-
     }
 
     public int getNumLines() {
