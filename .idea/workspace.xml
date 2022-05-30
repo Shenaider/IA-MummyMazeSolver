@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7a091b84-42a2-4966-937e-8409e68ac26b" name="Default" comment="Added detected colision to unlock doors, fall in trap, colision between NPCS&#10;Added replenish for older positions (check if old position was keys or traps)">
+    <list default="true" id="7a091b84-42a2-4966-937e-8409e68ac26b" name="Default" comment="Added movement to GameArea">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/agent/Agent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/agent/Agent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/GameArea.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/GameArea.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gui/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/MainFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mummymaze/HeuristicTileDistance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mummymaze/HeuristicTileDistance.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mummymaze/HeuristicTilesOutOfPlace.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mummymaze/HeuristicTilesOutOfPlace.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mummymaze/MummyMazeState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mummymaze/MummyMazeState.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +97,7 @@
       <workItem from="1649112440091" duration="375000" />
       <workItem from="1650908521009" duration="7733000" />
       <workItem from="1651527208800" duration="652000" />
-      <workItem from="1653939876058" duration="9611000" />
+      <workItem from="1653939876058" duration="9749000" />
     </task>
     <task id="LOCAL-00001" summary="Added scorpion">
       <created>1653941523994</created>
@@ -118,7 +113,14 @@
       <option name="project" value="LOCAL" />
       <updated>1653944632759</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Added movement to GameArea">
+      <created>1653951711179</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1653951711179</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -139,7 +141,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Added scorpion" />
     <MESSAGE value="Added detected colision to unlock doors, fall in trap, colision between NPCS&#10;Added replenish for older positions (check if old position was keys or traps)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added detected colision to unlock doors, fall in trap, colision between NPCS&#10;Added replenish for older positions (check if old position was keys or traps)" />
+    <MESSAGE value="Added movement to GameArea" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added movement to GameArea" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

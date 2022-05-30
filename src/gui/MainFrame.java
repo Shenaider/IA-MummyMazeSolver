@@ -54,7 +54,7 @@ public class MainFrame extends JFrame {
 
 
 
-    private MummyMazeAgent agent = new MummyMazeAgent(new MummyMazeState(initialMatrix));
+    private MummyMazeAgent agent = new MummyMazeAgent(initialState);
     private JComboBox comboBoxSearchMethods;
     private JComboBox comboBoxHeuristics;
     private JLabel labelSearchParameter = new JLabel("limit/beam size:");
@@ -221,7 +221,6 @@ public class MainFrame extends JFrame {
     }
 
     public void buttonShowSolution_ActionPerformed(ActionEvent e) {
-        ga.setState(agent.getEnvironment());
         buttonShowSolution.setEnabled(false);
         buttonStop.setEnabled(false);
         buttonSolve.setEnabled(false);
