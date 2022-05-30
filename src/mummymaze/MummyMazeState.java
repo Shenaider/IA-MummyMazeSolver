@@ -67,6 +67,7 @@ public class MummyMazeState extends State implements Cloneable {
     @Override
     public void executeAction(Action action) {
         action.execute(this);
+
         firePuzzleChanged(null);
     }
 
@@ -143,58 +144,62 @@ public class MummyMazeState extends State implements Cloneable {
     public void moveUp() {
         int line = hero.getLine();
         int column = hero.getColumn();
+        detectColision(line-2, column, 'H');
         matrix[line-2][column] = 'H';
         matrix[line][column] = '.';
         replenishOverlays(line,column);
         hero.setLine(line-2);
-        moveNPC("up");
+        moveNPC();
     }
 
     public void moveRight() {
         int line = hero.getLine();
         int column = hero.getColumn();
+        detectColision(line, column+2, 'H');
         matrix[line][column+2] = 'H';
         matrix[line][column] = '.';
         replenishOverlays(line,column);
         hero.setColumn(column+2);
-        moveNPC("right");
+        moveNPC();
     }
 
     public void moveDown() {
         int line = hero.getLine();
         int column = hero.getColumn();
+        detectColision(line+2, column, 'H');
         matrix[line+2][column] = 'H';
         matrix[line][column] = '.';
         replenishOverlays(line,column);
         hero.setLine(line+2);
-        moveNPC("down");
+        moveNPC();
     }
 
     public void moveLeft() {
         int line = hero.getLine();
         int column = hero.getColumn();
+        detectColision(line, column-2, 'H');
         matrix[line][column-2] = 'H';
         matrix[line][column] = '.';
         replenishOverlays(line,column);
         hero.setColumn(column-2);
-        moveNPC("left");
+        moveNPC();
     }
 
     public void stand() {
-        moveNPC("stand");
+        moveNPC();
     }
 
-    public void moveNPC(String direction){
+    public void moveNPC(){
         if(!mumias.isEmpty()){
-            moveMumiaEscorpiao(direction, mumias, true);
-            moveMumiaEscorpiao(direction, mumias, true);
+            moveMumiaEscorpiao(mumias, true);
+            moveMumiaEscorpiao(mumias, true);
         }
         if(!escorpioes.isEmpty()){
-            moveMumiaEscorpiao(direction, escorpioes, false);
+            moveMumiaEscorpiao(escorpioes, false);
         }
         if(!mumiasVermelhas.isEmpty()){
-            moveMumiaVermelha(direction);
-            moveMumiaVermelha(direction);
+            moveMumiaVermelha();
+            moveMumiaVermelha();
         }
     }
 
@@ -202,23 +207,29 @@ public class MummyMazeState extends State implements Cloneable {
         int lineNpc = npc.getLine();
         int columnNpc = npc.getColumn();
         if(canMoveEntityUp(npc, false)){
-            detectColision(lineNpc-2, columnNpc);
-            matrix[lineNpc-2][columnNpc] = code;
-            matrix[lineNpc][columnNpc] = '.';
+            boolean removeSelf = detectColision(lineNpc-2, columnNpc, code);
+            if(removeSelf){
+                removeSelfNPC(lineNpc, columnNpc, code);
+            } else {
+                matrix[lineNpc-2][columnNpc] = code;
+                npc.setLine(lineNpc-2);
+            }
             replenishOverlays(lineNpc,columnNpc);
-            npc.setLine(lineNpc-2);
         }
     }
 
     public void moveNPCDown(Coordinates npc, char code){
         int lineNpc = npc.getLine();
         int columnNpc = npc.getColumn();
-        if(canMoveEntityLeft(npc, false)){
-            detectColision(lineNpc+2, columnNpc);
-            matrix[lineNpc+2][columnNpc] = code;
-            matrix[lineNpc][columnNpc] = '.';
+        if(canMoveEntityDown(npc, false)){
+            boolean removeSelf = detectColision(lineNpc+2, columnNpc, code);
+            if(removeSelf) {
+                removeSelfNPC(lineNpc, columnNpc, code);
+            } else {
+                matrix[lineNpc + 2][columnNpc] = code;
+                npc.setLine(lineNpc+2);
+            }
             replenishOverlays(lineNpc,columnNpc);
-            npc.setLine(lineNpc+2);
         }
     }
 
@@ -226,11 +237,14 @@ public class MummyMazeState extends State implements Cloneable {
         int lineNpc = npc.getLine();
         int columnNpc = npc.getColumn();
         if(canMoveEntityLeft(npc, false)){
-            detectColision(lineNpc, columnNpc-2);
-            matrix[lineNpc][columnNpc-2] = code;
-            matrix[lineNpc][columnNpc] = '.';
+            boolean removeSelf = detectColision(lineNpc, columnNpc-2, code);
+            if(removeSelf){
+                removeSelfNPC(lineNpc, columnNpc, code);
+            } else {
+                matrix[lineNpc][columnNpc-2] = code;
+                npc.setColumn(columnNpc-2);
+            }
             replenishOverlays(lineNpc,columnNpc);
-            npc.setColumn(columnNpc-2);
         }
     }
 
@@ -238,15 +252,30 @@ public class MummyMazeState extends State implements Cloneable {
         int lineNpc = npc.getLine();
         int columnNpc = npc.getColumn();
         if(canMoveEntityRight(npc, false)){
-            detectColision(lineNpc, columnNpc+2);
-            matrix[lineNpc][columnNpc+2] = code;
-            matrix[lineNpc][columnNpc] = '.';
+            boolean removeSelf = detectColision(lineNpc, columnNpc+2, code);
+            if(removeSelf) {
+                removeSelfNPC(lineNpc, columnNpc, code);
+            } else {
+                matrix[lineNpc][columnNpc + 2] = code;
+                npc.setColumn(columnNpc+2);
+            }
             replenishOverlays(lineNpc,columnNpc);
-            npc.setColumn(columnNpc+2);
         }
     }
 
-    public void detectColision(int line, int column){
+    public void removeSelfNPC(int line, int column, char npc){
+        switch (npc){
+            case 'V':
+                mumiasVermelhas.remove(new Coordinates(line, column));
+                break;
+            case 'E':
+                escorpioes.remove(new Coordinates(line, column));
+                break;
+        }
+    }
+
+    public boolean detectColision(int line, int column, char npc){
+        boolean isHero = (npc == 'H');
         char matrix_destination = matrix[line][column];
         switch(matrix_destination){
             case 'C':
@@ -259,18 +288,43 @@ public class MummyMazeState extends State implements Cloneable {
                 }
                 break;
             case 'H':
-                //TRIGGER GAMEOVER!
+                //TODO: TRIGGER GAMEOVER!
                 break;
             case 'M':
-                mumias.remove(new Coordinates(line, column));
+                if(isHero){
+                    //TODO: TRIGGER GAMEOVER
+                }
+                if(npc == 'V'){
+                    return true;
+                } else if(npc == 'E') {
+                    return true;
+                } else {
+                    mumias.remove(new Coordinates(line, column));
+                }
                 break;
             case 'V':
-                mumiasVermelhas.remove(new Coordinates(line, column));
+                if(isHero){
+                    //TODO: TRIGGER GAMEOVER
+                }
+                if(npc == 'E') {
+                    return true;
+                } else {
+                    mumiasVermelhas.remove(new Coordinates(line, column));
+                }
                 break;
             case 'E':
+                if(isHero){
+                    //TODO: TRIGGER GAMEOVER
+                }
                 escorpioes.remove(new Coordinates(line, column));
                 break;
+            case 'A':
+                if(isHero){
+                    //TODO: TRIGGER GAMEOVER
+                }
+                break;
         }
+        return false;
     }
 
     public void replenishOverlays(int line, int column){
@@ -284,122 +338,44 @@ public class MummyMazeState extends State implements Cloneable {
             }
         } else if(chave.getColumn() == column && chave.getLine() == line){
             matrix[line][column] = 'C';
+        } else {
+            matrix[line][column] = '.';
         }
     }
 
-    public void moveMumiaEscorpiao(String direction, LinkedList<Coordinates> npcs, boolean isMummy){
+    public void moveMumiaEscorpiao(LinkedList<Coordinates> npcs, boolean isMummy){
         for (Coordinates npc: npcs){
             char npc_char = (isMummy) ? 'M' : 'E';
             int lineNpc = npc.getLine();
             int columnNpc = npc.getColumn();
             int lineHero = hero.getLine();
             int columnHero = hero.getColumn();
-            switch(direction){
-                case "up":
-                    if(lineHero<lineNpc){
-                        moveNPCDown(npc,npc_char);
-                    } else if(columnHero>columnNpc){
-                        moveNPCRight(npc,npc_char);
-                    } else if(columnHero<lineNpc){
-                        moveNPCLeft(npc,npc_char);
-                    }
-                    break;
-                case "down":
-                    if(lineHero>lineNpc){
-                        moveNPCUp(npc,npc_char);
-                    } else if(columnHero>columnNpc){
-                        moveNPCRight(npc,npc_char);
-                    } else if(columnHero<lineNpc){
-                        moveNPCLeft(npc,npc_char);
-                    }
-                    break;
-                case "left":
-                    if(columnHero<lineNpc){
-                        moveNPCLeft(npc,npc_char);
-                    } else if(lineHero<lineNpc){
-                        moveNPCDown(npc,npc_char);
-                    } else if(lineHero>lineNpc){
-                        moveNPCUp(npc,npc_char);
-                    }
-                    break;
-                case "right":
-                    if(columnHero>columnNpc){
-                        moveNPCRight(npc,npc_char);
-                    } else if(lineHero<lineNpc){
-                        moveNPCDown(npc,npc_char);
-                    } else if(lineHero>lineNpc){
-                        moveNPCUp(npc,npc_char);
-                    }
-                    break;
-                case "stand":
-                    if(columnHero<columnNpc){
-                        moveNPCLeft(npc,npc_char);
-                    } else if(columnHero>columnNpc){
-                        moveNPCRight(npc,npc_char);
-                    } else if(lineHero>lineNpc){
-                        moveNPCUp(npc,npc_char);
-                    } else if(lineHero<lineNpc){
-                        moveNPCDown(npc,npc_char);
-                    }
-                    break;
+            if(columnHero>columnNpc){
+                moveNPCRight(npc,npc_char);
+            } else if(columnHero<lineNpc){
+                moveNPCLeft(npc,npc_char);
+            } else if(lineHero<lineNpc){
+                moveNPCDown(npc,npc_char);
+            } else if(lineHero>lineNpc){
+                moveNPCUp(npc,npc_char);
             }
         }
     }
 
-    public void moveMumiaVermelha(String direction){
+    public void moveMumiaVermelha(){
         for (Coordinates mummy: mumiasVermelhas){
             int lineMummy = mummy.getLine();
             int columnMummy = mummy.getColumn();
             int lineHero = hero.getLine();
             int columnHero = hero.getColumn();
-            switch(direction){
-                case "up":
-                    if(lineHero<lineMummy){
-                        moveNPCUp(mummy, 'V');
-                    } else if(columnHero<columnMummy){
-                        moveNPCLeft(mummy, 'V');
-                    } else if(columnHero>columnMummy){
-                        moveNPCRight(mummy, 'V');
-                    }
-                    break;
-                case "down":
-                    if(lineHero>lineMummy){
-                        moveNPCUp(mummy, 'V');
-                    } else if(columnHero<columnMummy){
-                        moveNPCLeft(mummy, 'V');
-                    } else if(columnHero>columnMummy){
-                        moveNPCRight(mummy, 'V');
-                    }
-                    break;
-                case "left":
-                    if(columnHero<columnMummy){
-                        moveNPCLeft(mummy, 'V');
-                    } else if(lineHero<lineMummy){
-                        moveNPCDown(mummy, 'V');
-                    } else if(lineHero>lineMummy){
-                        moveNPCUp(mummy, 'V');
-                    }
-                    break;
-                case "right":
-                    if(columnHero>columnMummy){
-                        moveNPCRight(mummy, 'V');
-                    } else if(lineHero<lineMummy){
-                        moveNPCDown(mummy, 'V');
-                    } else if(lineHero>lineMummy){
-                        moveNPCUp(mummy, 'V');
-                    }
-                    break;
-                case "stand":
-                    if(lineHero>lineMummy){
-                        moveNPCUp(mummy, 'V');
-                    } else if(lineHero<lineMummy){
-                        moveNPCDown(mummy, 'V');
-                    } else if(columnHero<columnMummy){
-                        moveNPCLeft(mummy, 'V');
-                    } else if(columnHero>columnMummy){
-                        moveNPCRight(mummy, 'V');
-                    }
-                    break;
+            if(lineHero<lineMummy){
+                moveNPCUp(mummy, 'V');
+            } else if(lineHero>lineMummy){
+                moveNPCUp(mummy, 'V');
+            } else if(columnHero<columnMummy){
+                moveNPCLeft(mummy, 'V');
+            } else if(columnHero>columnMummy){
+                moveNPCRight(mummy, 'V');
             }
         }
     }
@@ -475,6 +451,7 @@ public class MummyMazeState extends State implements Cloneable {
     }
 
     public void firePuzzleChanged(MummyMazeEvent pe) {
+
         for (MummyMazeListener listener : listeners) {
             listener.puzzleChanged(null);
         }

@@ -53,6 +53,7 @@ public class MainFrame extends JFrame {
     MummyMazeState initialState = new MummyMazeState(initialMatrix);
 
 
+
     private MummyMazeAgent agent = new MummyMazeAgent(new MummyMazeState(initialMatrix));
     private JComboBox comboBoxSearchMethods;
     private JComboBox comboBoxHeuristics;
@@ -66,6 +67,7 @@ public class MainFrame extends JFrame {
     private JButton buttonReset = new JButton("Reset to initial state");
     private JTextArea textArea;
     GameArea ga = new GameArea();
+
 
     public MainFrame() {
         try {
@@ -219,6 +221,7 @@ public class MainFrame extends JFrame {
     }
 
     public void buttonShowSolution_ActionPerformed(ActionEvent e) {
+        ga.setState(agent.getEnvironment());
         buttonShowSolution.setEnabled(false);
         buttonStop.setEnabled(false);
         buttonSolve.setEnabled(false);
