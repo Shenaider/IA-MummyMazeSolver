@@ -352,12 +352,12 @@ public class MummyMazeState extends State implements Cloneable {
             int columnHero = hero.getColumn();
             if(columnHero>columnNpc){
                 moveNPCRight(npc,npc_char);
-            } else if(columnHero<lineNpc){
+            } else if(columnHero<columnNpc){
                 moveNPCLeft(npc,npc_char);
             } else if(lineHero<lineNpc){
-                moveNPCDown(npc,npc_char);
-            } else if(lineHero>lineNpc){
                 moveNPCUp(npc,npc_char);
+            } else if(lineHero>lineNpc){
+                moveNPCDown(npc,npc_char);
             }
         }
     }
@@ -371,7 +371,7 @@ public class MummyMazeState extends State implements Cloneable {
             if(lineHero<lineMummy){
                 moveNPCUp(mummy, 'V');
             } else if(lineHero>lineMummy){
-                moveNPCUp(mummy, 'V');
+                moveNPCDown(mummy, 'V');
             } else if(columnHero<columnMummy){
                 moveNPCLeft(mummy, 'V');
             } else if(columnHero>columnMummy){
@@ -465,9 +465,7 @@ public class MummyMazeState extends State implements Cloneable {
         if(heroLine==exitLine && (heroColumn+1==exitColumn || heroColumn-1==exitColumn)){
             return true;
         }
-        if(heroColumn==exitColumn && (heroLine+1==exitLine || heroLine-1==exitLine)){
-            return true;
-        }
-        return false;
+
+        return (heroColumn==exitColumn && (heroLine+1==exitLine || heroLine-1==exitLine));
     }
 }
