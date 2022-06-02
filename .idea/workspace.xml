@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7a091b84-42a2-4966-937e-8409e68ac26b" name="Default" comment="Added Coordinates">
+    <list default="true" id="7a091b84-42a2-4966-937e-8409e68ac26b" name="Default" comment="Fixed movement">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeProblem.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeProblem.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeState.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeState.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mummymaze/MummyMazeProblem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mummymaze/MummyMazeProblem.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/mummymaze/MummyMazeState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mummymaze/MummyMazeState.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -134,7 +131,14 @@
       <option name="project" value="LOCAL" />
       <updated>1653951711179</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Fixed movement">
+      <created>1654015992258</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1654015992258</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -156,6 +160,18 @@
     <MESSAGE value="Added scorpion" />
     <MESSAGE value="Added detected colision to unlock doors, fall in trap, colision between NPCS&#10;Added replenish for older positions (check if old position was keys or traps)" />
     <MESSAGE value="Added movement to GameArea" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added movement to GameArea" />
+    <MESSAGE value="Fixed movement" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed movement" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/mummymaze/MummyMazeState.java</url>
+          <line>194</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

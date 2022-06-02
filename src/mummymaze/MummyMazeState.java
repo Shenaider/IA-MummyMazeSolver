@@ -192,6 +192,7 @@ public class MummyMazeState extends State implements Cloneable {
     public void moveNPC(){
         if(!mumias.isEmpty()){
             moveMumiaEscorpiao(mumias, true);
+            firePuzzleChanged(null);
             moveMumiaEscorpiao(mumias, true);
         }
         if(!escorpioes.isEmpty()){
@@ -199,6 +200,7 @@ public class MummyMazeState extends State implements Cloneable {
         }
         if(!mumiasVermelhas.isEmpty()){
             moveMumiaVermelha();
+            firePuzzleChanged(null);
             moveMumiaVermelha();
         }
     }
