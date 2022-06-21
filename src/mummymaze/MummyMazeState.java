@@ -13,6 +13,7 @@ public class MummyMazeState extends State implements Cloneable {
 
     public static final int SIZE = 13;
     private char[][] matrix;
+    boolean gameOver = false;
     private LinkedList<Coordinates> mumias = new LinkedList<>();
     private LinkedList<Coordinates> mumiasVermelhas = new LinkedList<>();
     private LinkedList<Coordinates> escorpioes = new LinkedList<>();
@@ -27,7 +28,7 @@ public class MummyMazeState extends State implements Cloneable {
         return matrix;
     }
 
-    public MummyMazeState(char[][] matrix) {
+    public MummyMazeState(char[][] matrix, int KeyLine, int KeyColumm, LinkedList<Coordinates> traps) {
         String state = "";
         this.matrix = new char[matrix.length][matrix.length];
         for (int i = 0; i < matrix.length; i++) {
@@ -47,13 +48,13 @@ public class MummyMazeState extends State implements Cloneable {
                         mumiasVermelhas.add(new Coordinates(j,i));
                         break;
                     case 'A':
-                        armadilhas.add(new Coordinates(j,i));
+                        armadilhas = traps;
                         break;
                     case 'E':
                         escorpioes.add(new Coordinates(j,i));
                         break;
                     case 'C':
-                        chave = new Coordinates(j,i);
+                        chave = new Coordinates(KeyLine,KeyColumm);
                         break;
                     case '=':
                     case '"':
@@ -75,64 +76,73 @@ public class MummyMazeState extends State implements Cloneable {
         return canMoveEntityUp(hero, true);
     }
 
-    public boolean canMoveEntityUp(Coordinates entity, boolean hero){
+    public boolean canMoveEntityUp(Coordinates entity, boolean isHero){
         int line = entity.getLine();
         int column = entity.getColumn();
         if(line == 1){
-            if(matrix[line-1][column] == 'S' && hero){
+            if(matrix[line-1][column] == 'S' && isHero){
                 return true;
             }
             return false;
         }
-        return (matrix[line-2][column] == '.' && matrix[line-1][column] != '=' && matrix[line-1][column] != '-');
+        return ((matrix[line-2][column] == '.' || matrix[line-2][column] == 'C' || (!isHero && matrix[line-2][column] == 'H'))
+                && matrix[line-1][column] != '='
+                && matrix[line-1][column] != '-');
     }
 
     public boolean canMoveRight() {
         return canMoveEntityRight(hero, true);
     }
 
-    public boolean canMoveEntityRight(Coordinates entity, boolean hero){
+    public boolean canMoveEntityRight(Coordinates entity, boolean isHero){
         int line = entity.getLine();
         int column = entity.getColumn();
         if(column == 11){
-            if(matrix[line][column+1] == 'S' && hero){
+            if(matrix[line][column+1] == 'S' && isHero){
                 return true;
             }
             return false;
         }
-        return (matrix[line][column+2] == '.' && matrix[line][column+1] != '"' && matrix[line][column+1] != '|');
+        return ((matrix[line][column+2] == '.' || matrix[line][column+2] == 'C' || (!isHero && matrix[line][column+2] == 'H'))
+                && matrix[line][column+1] != '"'
+                && matrix[line][column+1] != '|');
     }
 
     public boolean canMoveDown() {
         return canMoveEntityDown(hero, true);
     }
 
-    public boolean canMoveEntityDown(Coordinates entity, boolean hero){
+    public boolean canMoveEntityDown(Coordinates entity, boolean isHero){
         int line = entity.getLine();
         int column = entity.getColumn();
         if(line == 11){
-            if(matrix[line+1][column] == 'S' && hero){
+            if(matrix[line+1][column] == 'S' && isHero){
                 return true;
             }
             return false;
         }
-        return (matrix[line+2][column] == '.' && matrix[line+1][column] != '=' && matrix[line+1][column] != '-');
+        return ((matrix[line+2][column] == '.' || matrix[line+2][column] == 'C' || (!isHero && matrix[line+2][column] == 'H'))
+                && matrix[line+1][column] != '='
+                && matrix[line+1][column] != '-');
     }
 
     public boolean canMoveLeft() {
         return canMoveEntityLeft(hero, true);
     }
 
-    public boolean canMoveEntityLeft(Coordinates entity, boolean hero){
+    public boolean canMoveEntityLeft(Coordinates entity, boolean isHero){
         int line = entity.getLine();
         int column = entity.getColumn();
         if(column == 1){
-            if(matrix[line][column-1] == 'S' && hero){
+            if(matrix[line][column-1] == 'S' && isHero){
                 return true;
             }
             return false;
         }
-        return (matrix[line][column-2] == '.' && matrix[line][column-1] != '"' && matrix[line][column-1] != '|');
+        return (
+                (matrix[line][column-2] == '.' || matrix[line][column-2] == 'C' || (!isHero && matrix[line][column-2] == 'H'))
+                && matrix[line][column-1] != '"'
+                && matrix[line][column-1] != '|');
     }
 
     /*
@@ -192,7 +202,6 @@ public class MummyMazeState extends State implements Cloneable {
     public void moveNPC(){
         if(!mumias.isEmpty()){
             moveMumiaEscorpiao(mumias, true);
-            firePuzzleChanged(null);
             moveMumiaEscorpiao(mumias, true);
         }
         if(!escorpioes.isEmpty()){
@@ -200,7 +209,6 @@ public class MummyMazeState extends State implements Cloneable {
         }
         if(!mumiasVermelhas.isEmpty()){
             moveMumiaVermelha();
-            firePuzzleChanged(null);
             moveMumiaVermelha();
         }
     }
@@ -290,10 +298,12 @@ public class MummyMazeState extends State implements Cloneable {
                 }
                 break;
             case 'H':
+                gameOver = true;
                 //TODO: TRIGGER GAMEOVER!
                 break;
             case 'M':
                 if(isHero){
+                    gameOver = true;
                     //TODO: TRIGGER GAMEOVER
                 }
                 if(npc == 'V'){
@@ -306,6 +316,7 @@ public class MummyMazeState extends State implements Cloneable {
                 break;
             case 'V':
                 if(isHero){
+                    gameOver = true;
                     //TODO: TRIGGER GAMEOVER
                 }
                 if(npc == 'E') {
@@ -316,12 +327,15 @@ public class MummyMazeState extends State implements Cloneable {
                 break;
             case 'E':
                 if(isHero){
+                    gameOver = true;
                     //TODO: TRIGGER GAMEOVER
+                } else {
+                    return true;
                 }
-                escorpioes.remove(new Coordinates(line, column));
                 break;
             case 'A':
                 if(isHero){
+                    gameOver = true;
                     //TODO: TRIGGER GAMEOVER
                 }
                 break;
@@ -352,13 +366,35 @@ public class MummyMazeState extends State implements Cloneable {
             int columnNpc = npc.getColumn();
             int lineHero = hero.getLine();
             int columnHero = hero.getColumn();
+            boolean moved = false;
             if(columnHero>columnNpc){
-                moveNPCRight(npc,npc_char);
-            } else if(columnHero<columnNpc){
-                moveNPCLeft(npc,npc_char);
-            } else if(lineHero<lineNpc){
+                if(canMoveEntityRight(npc, false)){
+                    moveNPCRight(npc,npc_char);
+                    moved = true;
+                } else if(lineHero<lineNpc && canMoveEntityUp(npc,false)){
+                    moveNPCUp(npc,npc_char);
+                    moved = true;
+                } else if(lineHero>lineNpc && canMoveEntityDown(npc, false)) {
+                    moveNPCDown(npc, npc_char);
+                    moved = true;
+                }
+            }
+
+            if(columnHero<columnNpc && !moved){
+                if(canMoveEntityLeft(npc, false)){
+                    moveNPCLeft(npc,npc_char);
+                    moved = true;
+                } else if(lineHero<lineNpc && canMoveEntityUp(npc,false)){
+                    moveNPCUp(npc,npc_char);
+                    moved = true;
+                } else if(lineHero>lineNpc && canMoveEntityDown(npc, false)) {
+                    moveNPCDown(npc, npc_char);
+                    moved = true;
+                }
+            }
+            if(lineHero<lineNpc && !moved && columnHero==columnNpc){
                 moveNPCUp(npc,npc_char);
-            } else if(lineHero>lineNpc){
+            } else if(lineHero>lineNpc && !moved && columnHero==columnNpc){
                 moveNPCDown(npc,npc_char);
             }
         }
@@ -370,13 +406,34 @@ public class MummyMazeState extends State implements Cloneable {
             int columnMummy = mummy.getColumn();
             int lineHero = hero.getLine();
             int columnHero = hero.getColumn();
+            boolean moved = false;
             if(lineHero<lineMummy){
-                moveNPCUp(mummy, 'V');
-            } else if(lineHero>lineMummy){
-                moveNPCDown(mummy, 'V');
-            } else if(columnHero<columnMummy){
+                if(canMoveEntityUp(mummy, false)){
+                    moveNPCUp(mummy,'V');
+                    moved = true;
+                } else if(columnHero<columnMummy && canMoveEntityLeft(mummy,false)){
+                    moveNPCLeft(mummy,'V');
+                    moved = true;
+                } else if(columnHero>columnMummy && canMoveEntityRight(mummy, false)) {
+                    moveNPCRight(mummy, 'V');
+                    moved = true;
+                }
+            }
+            if(lineHero>lineMummy && !moved){
+                if(canMoveEntityDown(mummy, false)){
+                    moveNPCDown(mummy,'V');
+                    moved = true;
+                } else if(columnHero<columnMummy && canMoveEntityLeft(mummy,false)){
+                    moveNPCLeft(mummy,'V');
+                    moved = true;
+                } else if(columnHero>columnMummy && canMoveEntityRight(mummy, false)) {
+                    moveNPCRight(mummy, 'V');
+                    moved = true;
+                }
+            }
+            if(columnHero<columnMummy && !moved){
                 moveNPCLeft(mummy, 'V');
-            } else if(columnHero>columnMummy){
+            } else if(columnHero>columnMummy && !moved){
                 moveNPCRight(mummy, 'V');
             }
         }
@@ -435,7 +492,7 @@ public class MummyMazeState extends State implements Cloneable {
 
     @Override
     public MummyMazeState clone() {
-        return new MummyMazeState(matrix);
+        return new MummyMazeState(matrix, chave.getLine(), chave.getColumn(), armadilhas);
     }
     //Listeners
     private transient ArrayList<MummyMazeListener> listeners = new ArrayList<MummyMazeListener>(3);
@@ -469,5 +526,9 @@ public class MummyMazeState extends State implements Cloneable {
         }
 
         return (heroColumn==exitColumn && (heroLine+1==exitLine || heroLine-1==exitLine));
+    }
+
+    public boolean isGameOver(){
+        return gameOver;
     }
 }

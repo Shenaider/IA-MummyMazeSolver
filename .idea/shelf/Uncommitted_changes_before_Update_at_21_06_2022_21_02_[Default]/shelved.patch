@@ -1,0 +1,463 @@
+Index: src/mummymaze/MummyMazeState.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package mummymaze;\r\n\r\nimport agent.Action;\r\nimport agent.State;\r\nimport gui.GameArea;\r\nimport utils.Coordinates;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.Arrays;\r\nimport java.util.LinkedList;\r\n\r\npublic class MummyMazeState extends State implements Cloneable {\r\n\r\n    public static final int SIZE = 13;\r\n    private char[][] matrix;\r\n    private LinkedList<Coordinates> mumias = new LinkedList<>();\r\n    private LinkedList<Coordinates> mumiasVermelhas = new LinkedList<>();\r\n    private LinkedList<Coordinates> escorpioes = new LinkedList<>();\r\n    private Coordinates chave = new Coordinates(0,0);\r\n    private LinkedList<Coordinates> portas_abertas = new LinkedList<>();\r\n    private LinkedList<Coordinates> portas_fechadas = new LinkedList<>();\r\n    private LinkedList<Coordinates> armadilhas = new LinkedList<>();\r\n    private Coordinates hero;\r\n    private Coordinates exit;\r\n\r\n    public char[][] getMatrix() {\r\n        return matrix;\r\n    }\r\n\r\n    public MummyMazeState(char[][] matrix) {\r\n        String state = \"\";\r\n        this.matrix = new char[matrix.length][matrix.length];\r\n        for (int i = 0; i < matrix.length; i++) {\r\n            for (int j = 0; j < matrix.length; j++) {\r\n                this.matrix[i][j] = matrix[i][j];\r\n                switch (matrix[i][j]){\r\n                    case 'H':\r\n                        hero = new Coordinates(j,i);\r\n                        break;\r\n                    case 'S':\r\n                        exit = new Coordinates(j,i);\r\n                        break;\r\n                    case 'M':\r\n                        mumias.add(new Coordinates(j,i));\r\n                        break;\r\n                    case 'V':\r\n                        mumiasVermelhas.add(new Coordinates(j,i));\r\n                        break;\r\n                    case 'A':\r\n                        armadilhas.add(new Coordinates(j,i));\r\n                        break;\r\n                    case 'E':\r\n                        escorpioes.add(new Coordinates(j,i));\r\n                        break;\r\n                    case 'C':\r\n                        chave = new Coordinates(j,i);\r\n                        break;\r\n                    case '=':\r\n                    case '\"':\r\n                        portas_fechadas.add(new Coordinates(j,i));\r\n                        break;\r\n                }\r\n            }\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public void executeAction(Action action) {\r\n        action.execute(this);\r\n\r\n        firePuzzleChanged(null);\r\n    }\r\n\r\n    public boolean canMoveUp() {\r\n        return canMoveEntityUp(hero, true);\r\n    }\r\n\r\n    public boolean canMoveEntityUp(Coordinates entity, boolean hero){\r\n        int line = entity.getLine();\r\n        int column = entity.getColumn();\r\n        if(line == 1){\r\n            if(matrix[line-1][column] == 'S' && hero){\r\n                return true;\r\n            }\r\n            return false;\r\n        }\r\n        return (matrix[line-2][column] == '.' && matrix[line-1][column] != '=' && matrix[line-1][column] != '-');\r\n    }\r\n\r\n    public boolean canMoveRight() {\r\n        return canMoveEntityRight(hero, true);\r\n    }\r\n\r\n    public boolean canMoveEntityRight(Coordinates entity, boolean hero){\r\n        int line = entity.getLine();\r\n        int column = entity.getColumn();\r\n        if(column == 11){\r\n            if(matrix[line][column+1] == 'S' && hero){\r\n                return true;\r\n            }\r\n            return false;\r\n        }\r\n        return (matrix[line][column+2] == '.' && matrix[line][column+1] != '\"' && matrix[line][column+1] != '|');\r\n    }\r\n\r\n    public boolean canMoveDown() {\r\n        return canMoveEntityDown(hero, true);\r\n    }\r\n\r\n    public boolean canMoveEntityDown(Coordinates entity, boolean hero){\r\n        int line = entity.getLine();\r\n        int column = entity.getColumn();\r\n        if(line == 11){\r\n            if(matrix[line+1][column] == 'S' && hero){\r\n                return true;\r\n            }\r\n            return false;\r\n        }\r\n        return (matrix[line+2][column] == '.' && matrix[line+1][column] != '=' && matrix[line+1][column] != '-');\r\n    }\r\n\r\n    public boolean canMoveLeft() {\r\n        return canMoveEntityLeft(hero, true);\r\n    }\r\n\r\n    public boolean canMoveEntityLeft(Coordinates entity, boolean hero){\r\n        int line = entity.getLine();\r\n        int column = entity.getColumn();\r\n        if(column == 1){\r\n            if(matrix[line][column-1] == 'S' && hero){\r\n                return true;\r\n            }\r\n            return false;\r\n        }\r\n        return (matrix[line][column-2] == '.' && matrix[line][column-1] != '\"' && matrix[line][column-1] != '|');\r\n    }\r\n\r\n    /*\r\n     * In the next four methods we don't verify if the actions are valid.\r\n     * This is done in method executeActions in class MummyMazeProblem.\r\n     * Doing the verification in these methods would imply that a clone of the\r\n     * state was created whether the operation could be executed or not.\r\n     */\r\n    public void moveUp() {\r\n        int line = hero.getLine();\r\n        int column = hero.getColumn();\r\n        detectColision(line-2, column, 'H');\r\n        matrix[line-2][column] = 'H';\r\n        matrix[line][column] = '.';\r\n        replenishOverlays(line,column);\r\n        hero.setLine(line-2);\r\n        moveNPC();\r\n    }\r\n\r\n    public void moveRight() {\r\n        int line = hero.getLine();\r\n        int column = hero.getColumn();\r\n        detectColision(line, column+2, 'H');\r\n        matrix[line][column+2] = 'H';\r\n        matrix[line][column] = '.';\r\n        replenishOverlays(line,column);\r\n        hero.setColumn(column+2);\r\n        moveNPC();\r\n    }\r\n\r\n    public void moveDown() {\r\n        int line = hero.getLine();\r\n        int column = hero.getColumn();\r\n        detectColision(line+2, column, 'H');\r\n        matrix[line+2][column] = 'H';\r\n        matrix[line][column] = '.';\r\n        replenishOverlays(line,column);\r\n        hero.setLine(line+2);\r\n        moveNPC();\r\n    }\r\n\r\n    public void moveLeft() {\r\n        int line = hero.getLine();\r\n        int column = hero.getColumn();\r\n        detectColision(line, column-2, 'H');\r\n        matrix[line][column-2] = 'H';\r\n        matrix[line][column] = '.';\r\n        replenishOverlays(line,column);\r\n        hero.setColumn(column-2);\r\n        moveNPC();\r\n    }\r\n\r\n    public void stand() {\r\n        moveNPC();\r\n    }\r\n\r\n    public void moveNPC(){\r\n        if(!mumias.isEmpty()){\r\n            moveMumiaEscorpiao(mumias, true);\r\n            moveMumiaEscorpiao(mumias, true);\r\n        }\r\n        if(!escorpioes.isEmpty()){\r\n            moveMumiaEscorpiao(escorpioes, false);\r\n        }\r\n        if(!mumiasVermelhas.isEmpty()){\r\n            moveMumiaVermelha();\r\n            moveMumiaVermelha();\r\n        }\r\n    }\r\n\r\n    public void moveNPCUp(Coordinates npc, char code){\r\n        int lineNpc = npc.getLine();\r\n        int columnNpc = npc.getColumn();\r\n        if(canMoveEntityUp(npc, false)){\r\n            boolean removeSelf = detectColision(lineNpc-2, columnNpc, code);\r\n            if(removeSelf){\r\n                removeSelfNPC(lineNpc, columnNpc, code);\r\n            } else {\r\n                matrix[lineNpc-2][columnNpc] = code;\r\n                npc.setLine(lineNpc-2);\r\n            }\r\n            replenishOverlays(lineNpc,columnNpc);\r\n        }\r\n    }\r\n\r\n    public void moveNPCDown(Coordinates npc, char code){\r\n        int lineNpc = npc.getLine();\r\n        int columnNpc = npc.getColumn();\r\n        if(canMoveEntityDown(npc, false)){\r\n            boolean removeSelf = detectColision(lineNpc+2, columnNpc, code);\r\n            if(removeSelf) {\r\n                removeSelfNPC(lineNpc, columnNpc, code);\r\n            } else {\r\n                matrix[lineNpc + 2][columnNpc] = code;\r\n                npc.setLine(lineNpc+2);\r\n            }\r\n            replenishOverlays(lineNpc,columnNpc);\r\n        }\r\n    }\r\n\r\n    public void moveNPCLeft(Coordinates npc, char code){\r\n        int lineNpc = npc.getLine();\r\n        int columnNpc = npc.getColumn();\r\n        if(canMoveEntityLeft(npc, false)){\r\n            boolean removeSelf = detectColision(lineNpc, columnNpc-2, code);\r\n            if(removeSelf){\r\n                removeSelfNPC(lineNpc, columnNpc, code);\r\n            } else {\r\n                matrix[lineNpc][columnNpc-2] = code;\r\n                npc.setColumn(columnNpc-2);\r\n            }\r\n            replenishOverlays(lineNpc,columnNpc);\r\n        }\r\n    }\r\n\r\n    public void moveNPCRight(Coordinates npc, char code){\r\n        int lineNpc = npc.getLine();\r\n        int columnNpc = npc.getColumn();\r\n        if(canMoveEntityRight(npc, false)){\r\n            boolean removeSelf = detectColision(lineNpc, columnNpc+2, code);\r\n            if(removeSelf) {\r\n                removeSelfNPC(lineNpc, columnNpc, code);\r\n            } else {\r\n                matrix[lineNpc][columnNpc + 2] = code;\r\n                npc.setColumn(columnNpc+2);\r\n            }\r\n            replenishOverlays(lineNpc,columnNpc);\r\n        }\r\n    }\r\n\r\n    public void removeSelfNPC(int line, int column, char npc){\r\n        switch (npc){\r\n            case 'V':\r\n                mumiasVermelhas.remove(new Coordinates(line, column));\r\n                break;\r\n            case 'E':\r\n                escorpioes.remove(new Coordinates(line, column));\r\n                break;\r\n        }\r\n    }\r\n\r\n    public boolean detectColision(int line, int column, char npc){\r\n        boolean isHero = (npc == 'H');\r\n        char matrix_destination = matrix[line][column];\r\n        switch(matrix_destination){\r\n            case 'C':\r\n                if(!portas_fechadas.isEmpty()){\r\n                    portas_abertas = portas_fechadas;\r\n                    portas_fechadas = new LinkedList<>();\r\n                } else {\r\n                    portas_fechadas = portas_abertas;\r\n                    portas_abertas = new LinkedList<>();\r\n                }\r\n                break;\r\n            case 'H':\r\n                //TODO: TRIGGER GAMEOVER!\r\n                break;\r\n            case 'M':\r\n                if(isHero){\r\n                    //TODO: TRIGGER GAMEOVER\r\n                }\r\n                if(npc == 'V'){\r\n                    return true;\r\n                } else if(npc == 'E') {\r\n                    return true;\r\n                } else {\r\n                    mumias.remove(new Coordinates(line, column));\r\n                }\r\n                break;\r\n            case 'V':\r\n                if(isHero){\r\n                    //TODO: TRIGGER GAMEOVER\r\n                }\r\n                if(npc == 'E') {\r\n                    return true;\r\n                } else {\r\n                    mumiasVermelhas.remove(new Coordinates(line, column));\r\n                }\r\n                break;\r\n            case 'E':\r\n                if(isHero){\r\n                    //TODO: TRIGGER GAMEOVER\r\n                }\r\n                escorpioes.remove(new Coordinates(line, column));\r\n                break;\r\n            case 'A':\r\n                if(isHero){\r\n                    //TODO: TRIGGER GAMEOVER\r\n                }\r\n                break;\r\n        }\r\n        return false;\r\n    }\r\n\r\n    public void replenishOverlays(int line, int column){\r\n        if(!armadilhas.isEmpty()){\r\n            for (Coordinates armadilha: armadilhas){\r\n                int armadilha_line=armadilha.getLine();\r\n                int armadilha_column=armadilha.getColumn();\r\n                if(armadilha_line == line && armadilha_column == column){\r\n                    matrix[line][column] = 'A';\r\n                }\r\n            }\r\n        } else if(chave.getColumn() == column && chave.getLine() == line){\r\n            matrix[line][column] = 'C';\r\n        } else {\r\n            matrix[line][column] = '.';\r\n        }\r\n    }\r\n\r\n    public void moveMumiaEscorpiao(LinkedList<Coordinates> npcs, boolean isMummy){\r\n        for (Coordinates npc: npcs){\r\n            char npc_char = (isMummy) ? 'M' : 'E';\r\n            int lineNpc = npc.getLine();\r\n            int columnNpc = npc.getColumn();\r\n            int lineHero = hero.getLine();\r\n            int columnHero = hero.getColumn();\r\n            if(columnHero>columnNpc){\r\n                moveNPCRight(npc,npc_char);\r\n            } else if(columnHero<lineNpc){\r\n                moveNPCLeft(npc,npc_char);\r\n            } else if(lineHero<lineNpc){\r\n                moveNPCDown(npc,npc_char);\r\n            } else if(lineHero>lineNpc){\r\n                moveNPCUp(npc,npc_char);\r\n            }\r\n        }\r\n    }\r\n\r\n    public void moveMumiaVermelha(){\r\n        for (Coordinates mummy: mumiasVermelhas){\r\n            int lineMummy = mummy.getLine();\r\n            int columnMummy = mummy.getColumn();\r\n            int lineHero = hero.getLine();\r\n            int columnHero = hero.getColumn();\r\n            if(lineHero<lineMummy){\r\n                moveNPCUp(mummy, 'V');\r\n            } else if(lineHero>lineMummy){\r\n                moveNPCUp(mummy, 'V');\r\n            } else if(columnHero<columnMummy){\r\n                moveNPCLeft(mummy, 'V');\r\n            } else if(columnHero>columnMummy){\r\n                moveNPCRight(mummy, 'V');\r\n            }\r\n        }\r\n    }\r\n\r\n    public int getNumLines() {\r\n        return matrix.length;\r\n    }\r\n\r\n    public int getNumColumns() {\r\n        return matrix[0].length;\r\n    }\r\n\r\n    public int getTileValue(int line, int column) {\r\n        if (!isValidPosition(line, column)) {\r\n            throw new IndexOutOfBoundsException(\"Invalid position!\");\r\n        }\r\n        return matrix[line][column];\r\n    }\r\n\r\n    public boolean isValidPosition(int line, int column) {\r\n        return line >= 0 && line < matrix.length && column >= 0 && column < matrix[0].length;\r\n    }\r\n\r\n    @Override\r\n    public boolean equals(Object other) {\r\n        if (!(other instanceof MummyMazeState)) {\r\n            return false;\r\n        }\r\n\r\n        MummyMazeState o = (MummyMazeState) other;\r\n        if (matrix.length != o.matrix.length) {\r\n            return false;\r\n        }\r\n\r\n        return Arrays.deepEquals(matrix, o.matrix);\r\n    }\r\n\r\n    @Override\r\n    public int hashCode() {\r\n        return 97 * 7 + Arrays.deepHashCode(this.matrix);\r\n    }\r\n\r\n    @Override\r\n    public String toString() {\r\n        StringBuilder buffer = new StringBuilder();\r\n        for (int i = 0; i < matrix.length; i++) {\r\n            buffer.append('\\n');\r\n            for (int j = 0; j < matrix.length; j++) {\r\n                buffer.append(matrix[i][j]);\r\n                buffer.append(' ');\r\n            }\r\n        }\r\n        return buffer.toString();\r\n    }\r\n\r\n    @Override\r\n    public MummyMazeState clone() {\r\n        return new MummyMazeState(matrix);\r\n    }\r\n    //Listeners\r\n    private transient ArrayList<MummyMazeListener> listeners = new ArrayList<MummyMazeListener>(3);\r\n\r\n    public synchronized void removeListener(MummyMazeListener l) {\r\n        if (listeners != null && listeners.contains(l)) {\r\n            listeners.remove(l);\r\n        }\r\n    }\r\n\r\n    public synchronized void addListener(MummyMazeListener l) {\r\n        if (!listeners.contains(l)) {\r\n            listeners.add(l);\r\n        }\r\n    }\r\n\r\n    public void firePuzzleChanged(MummyMazeEvent pe) {\r\n\r\n        for (MummyMazeListener listener : listeners) {\r\n            listener.puzzleChanged(null);\r\n        }\r\n    }\r\n\r\n    public boolean checkGoal() {\r\n        int exitLine = exit.getLine();\r\n        int exitColumn = exit.getColumn();\r\n        int heroLine = hero.getLine();\r\n        int heroColumn = hero.getColumn();\r\n        if(heroLine==exitLine && (heroColumn+1==exitColumn || heroColumn-1==exitColumn)){\r\n            return true;\r\n        }\r\n        if(heroColumn==exitColumn && (heroLine+1==exitLine || heroLine-1==exitLine)){\r\n            return true;\r\n        }\r\n        return false;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/mummymaze/MummyMazeState.java b/src/mummymaze/MummyMazeState.java
+--- a/src/mummymaze/MummyMazeState.java	(revision 55d6a30f5cf09fbb6ea714cbd6236a10e00b9d56)
++++ b/src/mummymaze/MummyMazeState.java	(date 1655841632995)
+@@ -13,6 +13,7 @@
+ 
+     public static final int SIZE = 13;
+     private char[][] matrix;
++    boolean gameOver = false;
+     private LinkedList<Coordinates> mumias = new LinkedList<>();
+     private LinkedList<Coordinates> mumiasVermelhas = new LinkedList<>();
+     private LinkedList<Coordinates> escorpioes = new LinkedList<>();
+@@ -27,7 +28,7 @@
+         return matrix;
+     }
+ 
+-    public MummyMazeState(char[][] matrix) {
++    public MummyMazeState(char[][] matrix, int KeyLine, int KeyColumm, LinkedList<Coordinates> traps) {
+         String state = "";
+         this.matrix = new char[matrix.length][matrix.length];
+         for (int i = 0; i < matrix.length; i++) {
+@@ -47,13 +48,13 @@
+                         mumiasVermelhas.add(new Coordinates(j,i));
+                         break;
+                     case 'A':
+-                        armadilhas.add(new Coordinates(j,i));
++                        armadilhas = traps;
+                         break;
+                     case 'E':
+                         escorpioes.add(new Coordinates(j,i));
+                         break;
+                     case 'C':
+-                        chave = new Coordinates(j,i);
++                        chave = new Coordinates(KeyLine,KeyColumm);
+                         break;
+                     case '=':
+                     case '"':
+@@ -75,64 +76,73 @@
+         return canMoveEntityUp(hero, true);
+     }
+ 
+-    public boolean canMoveEntityUp(Coordinates entity, boolean hero){
++    public boolean canMoveEntityUp(Coordinates entity, boolean isHero){
+         int line = entity.getLine();
+         int column = entity.getColumn();
+         if(line == 1){
+-            if(matrix[line-1][column] == 'S' && hero){
+-                return true;
++            if(matrix[line-1][column] == 'S' && isHero){
++                hero.setLine(line-1);
+             }
+             return false;
+         }
+-        return (matrix[line-2][column] == '.' && matrix[line-1][column] != '=' && matrix[line-1][column] != '-');
++        return ((matrix[line-2][column] == '.' || matrix[line-2][column] == 'C' || (!isHero && matrix[line-2][column] == 'H'))
++                && matrix[line-1][column] != '='
++                && matrix[line-1][column] != '-');
+     }
+ 
+     public boolean canMoveRight() {
+         return canMoveEntityRight(hero, true);
+     }
+ 
+-    public boolean canMoveEntityRight(Coordinates entity, boolean hero){
++    public boolean canMoveEntityRight(Coordinates entity, boolean isHero){
+         int line = entity.getLine();
+         int column = entity.getColumn();
+         if(column == 11){
+-            if(matrix[line][column+1] == 'S' && hero){
+-                return true;
++            if(matrix[line][column+1] == 'S' && isHero){
++                hero.setColumn(column+1);
+             }
+             return false;
+         }
+-        return (matrix[line][column+2] == '.' && matrix[line][column+1] != '"' && matrix[line][column+1] != '|');
++        return ((matrix[line][column+2] == '.' || matrix[line][column+2] == 'C' || (!isHero && matrix[line][column+2] == 'H'))
++                && matrix[line][column+1] != '"'
++                && matrix[line][column+1] != '|');
+     }
+ 
+     public boolean canMoveDown() {
+         return canMoveEntityDown(hero, true);
+     }
+ 
+-    public boolean canMoveEntityDown(Coordinates entity, boolean hero){
++    public boolean canMoveEntityDown(Coordinates entity, boolean isHero){
+         int line = entity.getLine();
+         int column = entity.getColumn();
+         if(line == 11){
+-            if(matrix[line+1][column] == 'S' && hero){
+-                return true;
++            if(matrix[line+1][column] == 'S' && isHero){
++                hero.setLine(line+1);
+             }
+             return false;
+         }
+-        return (matrix[line+2][column] == '.' && matrix[line+1][column] != '=' && matrix[line+1][column] != '-');
++        return ((matrix[line+2][column] == '.' || matrix[line+2][column] == 'C' || (!isHero && matrix[line+2][column] == 'H'))
++                && matrix[line+1][column] != '='
++                && matrix[line+1][column] != '-');
+     }
+ 
+     public boolean canMoveLeft() {
+         return canMoveEntityLeft(hero, true);
+     }
+ 
+-    public boolean canMoveEntityLeft(Coordinates entity, boolean hero){
++    public boolean canMoveEntityLeft(Coordinates entity, boolean isHero){
+         int line = entity.getLine();
+         int column = entity.getColumn();
+         if(column == 1){
+-            if(matrix[line][column-1] == 'S' && hero){
+-                return true;
++            if(matrix[line][column-1] == 'S' && isHero){
++                hero.setColumn(column-1);
+             }
+             return false;
+         }
+-        return (matrix[line][column-2] == '.' && matrix[line][column-1] != '"' && matrix[line][column-1] != '|');
++        return (
++                (matrix[line][column-2] == '.' || matrix[line][column-2] == 'C' || (!isHero && matrix[line][column-2] == 'H'))
++                && matrix[line][column-1] != '"'
++                && matrix[line][column-1] != '|');
+     }
+ 
+     /*
+@@ -144,11 +154,16 @@
+     public void moveUp() {
+         int line = hero.getLine();
+         int column = hero.getColumn();
++
+         detectColision(line-2, column, 'H');
++
+         matrix[line-2][column] = 'H';
+         matrix[line][column] = '.';
++
+         replenishOverlays(line,column);
++
+         hero.setLine(line-2);
++
+         moveNPC();
+     }
+ 
+@@ -288,10 +303,12 @@
+                 }
+                 break;
+             case 'H':
++                gameOver = true;
+                 //TODO: TRIGGER GAMEOVER!
+                 break;
+             case 'M':
+                 if(isHero){
++                    gameOver = true;
+                     //TODO: TRIGGER GAMEOVER
+                 }
+                 if(npc == 'V'){
+@@ -304,6 +321,7 @@
+                 break;
+             case 'V':
+                 if(isHero){
++                    gameOver = true;
+                     //TODO: TRIGGER GAMEOVER
+                 }
+                 if(npc == 'E') {
+@@ -314,12 +332,15 @@
+                 break;
+             case 'E':
+                 if(isHero){
++                    gameOver = true;
+                     //TODO: TRIGGER GAMEOVER
++                } else {
++                    return true;
+                 }
+-                escorpioes.remove(new Coordinates(line, column));
+                 break;
+             case 'A':
+                 if(isHero){
++                    gameOver = true;
+                     //TODO: TRIGGER GAMEOVER
+                 }
+                 break;
+@@ -433,7 +454,7 @@
+ 
+     @Override
+     public MummyMazeState clone() {
+-        return new MummyMazeState(matrix);
++        return new MummyMazeState(matrix, chave.getLine(), chave.getColumn(), armadilhas);
+     }
+     //Listeners
+     private transient ArrayList<MummyMazeListener> listeners = new ArrayList<MummyMazeListener>(3);
+@@ -470,4 +491,8 @@
+         }
+         return false;
+     }
++
++    public boolean isGameOver(){
++        return gameOver;
++    }
+ }
+Index: src/gui/MainFrame.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package gui;\r\n\r\nimport agent.Heuristic;\r\nimport agent.Solution;\r\nimport mummymaze.MummyMazeAgent;\r\nimport mummymaze.MummyMazeProblem;\r\nimport mummymaze.MummyMazeState;\r\n\r\nimport java.awt.*;\r\nimport java.awt.event.ActionEvent;\r\nimport java.awt.event.ActionListener;\r\nimport java.awt.event.KeyEvent;\r\nimport java.awt.event.KeyListener;\r\nimport java.io.IOException;\r\nimport java.util.Iterator;\r\nimport java.util.List;\r\nimport java.util.NoSuchElementException;\r\nimport javax.swing.BorderFactory;\r\nimport javax.swing.JButton;\r\nimport javax.swing.JComboBox;\r\nimport javax.swing.JFileChooser;\r\nimport javax.swing.JFrame;\r\nimport javax.swing.JLabel;\r\nimport javax.swing.JOptionPane;\r\nimport javax.swing.JPanel;\r\nimport javax.swing.JScrollPane;\r\nimport javax.swing.JTable;\r\nimport javax.swing.JTextArea;\r\nimport javax.swing.JTextField;\r\nimport javax.swing.SwingWorker;\r\nimport searchmethods.BeamSearch;\r\nimport searchmethods.DepthLimitedSearch;\r\nimport searchmethods.SearchMethod;\r\n\r\npublic class MainFrame extends JFrame {\r\n    //private int[][] initialMatrix = {{1, 0, 2}, {3, 4, 5}, {6, 7, 8}};\r\n    private char[][] initialMatrix = {\r\n            {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},\r\n            {' ','.',' ','.',' ','.',' ','.',' ','.','|','.',' '},\r\n            {' ',' ',' ',' ',' ','-',' ',' ',' ',' ',' ',' ',' '},\r\n            {' ','.',' ','.',' ','.',' ','H',' ','.',' ','.',' '},\r\n            {' ',' ',' ',' ',' ','-',' ',' ',' ',' ',' ',' ',' '},\r\n            {' ','.',' ','.',' ','.',' ','.','|','.',' ','.',' '},\r\n            {' ',' ',' ',' ',' ',' ',' ','-',' ',' ',' ','-',' '},\r\n            {' ','.',' ','.',' ','.',' ','.',' ','.','|','.',' '},\r\n            {' ',' ',' ','-',' ','-',' ',' ',' ',' ',' ',' ',' '},\r\n            {' ','.',' ','.',' ','.',' ','M',' ','.',' ','.',' '},\r\n            {' ',' ',' ',' ',' ',' ',' ',' ',' ','-',' ',' ',' '},\r\n            {' ','.',' ','.',' ','.',' ','.',' ','.',' ','.',' '},\r\n            {' ','S',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},\r\n    };\r\n\r\n    MummyMazeState initialState = new MummyMazeState(initialMatrix);\r\n\r\n\r\n\r\n    private MummyMazeAgent agent = new MummyMazeAgent(initialState);\r\n    private JComboBox comboBoxSearchMethods;\r\n    private JComboBox comboBoxHeuristics;\r\n    private JLabel labelSearchParameter = new JLabel(\"limit/beam size:\");\r\n    private JTextField textFieldSearchParameter = new JTextField(\"0\", 5);\r\n\r\n    private JButton buttonInitialState = new JButton(\"Read initial state\");\r\n    private JButton buttonSolve = new JButton(\"Solve\");\r\n    private JButton buttonStop = new JButton(\"Stop\");\r\n    private JButton buttonShowSolution = new JButton(\"Show solution\");\r\n    private JButton buttonReset = new JButton(\"Reset to initial state\");\r\n    private JTextArea textArea;\r\n    GameArea ga = new GameArea();\r\n\r\n\r\n    public MainFrame() {\r\n        try {\r\n            jbInit();\r\n        } catch (Exception e) {\r\n            e.printStackTrace(System.err);\r\n        }\r\n    }\r\n\r\n    private void jbInit() throws Exception {\r\n\r\n        setDefaultCloseOperation(EXIT_ON_CLOSE);\r\n        this.setTitle(\"Mummy Maze\");\r\n\r\n        JPanel contentPane = (JPanel) this.getContentPane();\r\n        contentPane.setLayout(new BorderLayout());\r\n        JPanel panelButtons = new JPanel(new FlowLayout());\r\n        panelButtons.add(buttonInitialState);\r\n        buttonInitialState.addActionListener(new ButtonInitialState_ActionAdapter(this));\r\n        panelButtons.add(buttonSolve);\r\n        buttonSolve.addActionListener(new ButtonSolve_ActionAdapter(this));\r\n        panelButtons.add(buttonStop);\r\n        buttonStop.setEnabled(false);\r\n        buttonStop.addActionListener(new ButtonStop_ActionAdapter(this));\r\n        panelButtons.add(buttonShowSolution);\r\n        buttonShowSolution.setEnabled(false);\r\n        buttonShowSolution.addActionListener(new ButtonShowSolution_ActionAdapter(this));\r\n        panelButtons.add(buttonReset);\r\n        buttonReset.setEnabled(false);\r\n        buttonReset.addActionListener(new ButtonReset_ActionAdapter(this));\r\n\r\n        JPanel panelSearchMethods = new JPanel(new FlowLayout());\r\n        comboBoxSearchMethods = new JComboBox(agent.getSearchMethodsArray());\r\n        panelSearchMethods.add(comboBoxSearchMethods);\r\n        comboBoxSearchMethods.addActionListener(new ComboBoxSearchMethods_ActionAdapter(this));\r\n        panelSearchMethods.add(labelSearchParameter);\r\n        labelSearchParameter.setEnabled(false);\r\n        panelSearchMethods.add(textFieldSearchParameter);\r\n        textFieldSearchParameter.setEnabled(false);\r\n        textFieldSearchParameter.setHorizontalAlignment(JTextField.RIGHT);\r\n        textFieldSearchParameter.addKeyListener(new TextFieldSearchParameter_KeyAdapter(this));\r\n        comboBoxHeuristics = new JComboBox(agent.getHeuristicsArray());\r\n        panelSearchMethods.add(comboBoxHeuristics);\r\n        comboBoxHeuristics.setEnabled(false);\r\n        comboBoxHeuristics.addActionListener(new ComboBoxHeuristics_ActionAdapter(this));\r\n\r\n        JPanel gamePanel = new JPanel(new FlowLayout());\r\n        ga.setState(initialState);\r\n        JPanel puzzlePanel = ga;\r\n\r\n        JPanel resultPanel = new JPanel(new FlowLayout());\r\n        textArea = new JTextArea(15, 31);\r\n        JScrollPane scrollPane = new JScrollPane(textArea);\r\n        textArea.setEditable(false);\r\n        resultPanel.add(scrollPane);\r\n\r\n        gamePanel.add(puzzlePanel);\r\n        gamePanel.add(resultPanel);\r\n\r\n        JPanel mainPanel = new JPanel(new BorderLayout());\r\n        mainPanel.add(panelButtons, BorderLayout.NORTH);\r\n        mainPanel.add(panelSearchMethods, BorderLayout.CENTER);\r\n        mainPanel.add(gamePanel, BorderLayout.SOUTH);\r\n        contentPane.add(mainPanel);\r\n\r\n        pack();\r\n    }\r\n\r\n\r\n\r\n\r\n\r\n    public void buttonInitialState_ActionPerformed(ActionEvent e) {\r\n        JFileChooser fc = new JFileChooser(new java.io.File(\".\"));\r\n        try {\r\n            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {\r\n                ga.setState(agent.readInitialStateFromFile(fc.getSelectedFile()));\r\n                buttonSolve.setEnabled(true);\r\n                buttonShowSolution.setEnabled(false);\r\n                buttonReset.setEnabled(false);\r\n            }\r\n        } catch (IOException e1) {\r\n            e1.printStackTrace(System.err);\r\n        } catch (NoSuchElementException e2) {\r\n            JOptionPane.showMessageDialog(this, \"File format not valid\", \"Error!\", JOptionPane.ERROR_MESSAGE);\r\n        }\r\n    }\r\n\r\n    public void comboBoxSearchMethods_ActionPerformed(ActionEvent e) {\r\n        int index = comboBoxSearchMethods.getSelectedIndex();\r\n        agent.setSearchMethod((SearchMethod) comboBoxSearchMethods.getItemAt(index));\r\n        ga.setState(agent.resetEnvironment());\r\n        buttonSolve.setEnabled(true);\r\n        buttonShowSolution.setEnabled(false);\r\n        buttonReset.setEnabled(false);\r\n        textArea.setText(\"\");\r\n        comboBoxHeuristics.setEnabled(index > 4); //Informed serch methods\r\n        textFieldSearchParameter.setEnabled(index == 3 || index == 7); // limited depth or beam search\r\n        labelSearchParameter.setEnabled(index == 3 || index == 7); // limited depth or beam search\r\n    }\r\n\r\n    public void comboBoxHeuristics_ActionPerformed(ActionEvent e) {\r\n        int index = comboBoxHeuristics.getSelectedIndex();\r\n        agent.setHeuristic((Heuristic) comboBoxHeuristics.getItemAt(index));\r\n        ga.setState(agent.resetEnvironment());\r\n        buttonSolve.setEnabled(true);\r\n        buttonShowSolution.setEnabled(false);\r\n        buttonReset.setEnabled(false);\r\n        textArea.setText(\"\");\r\n    }\r\n\r\n    public void buttonSolve_ActionPerformed(ActionEvent e) {\r\n\r\n        SwingWorker worker = new SwingWorker<Solution, Void>() {\r\n            @Override\r\n            public Solution doInBackground() {\r\n                textArea.setText(\"\");\r\n                buttonStop.setEnabled(true);\r\n                buttonSolve.setEnabled(false);\r\n                try {\r\n                    prepareSearchAlgorithm();\r\n                    MummyMazeProblem problem = new MummyMazeProblem((MummyMazeState) agent.getEnvironment().clone());\r\n                    agent.solveProblem(problem);\r\n                } catch (Exception e) {\r\n                    e.printStackTrace(System.err);\r\n                }\r\n                return null;\r\n            }\r\n\r\n            @Override\r\n            public void done() {\r\n                if (!agent.hasBeenStopped()) {\r\n                    textArea.setText(agent.getSearchReport());\r\n                    if (agent.hasSolution()) {\r\n                        buttonShowSolution.setEnabled(true);\r\n                    }\r\n                }\r\n                buttonSolve.setEnabled(true);\r\n                buttonStop.setEnabled(false);\r\n            }\r\n        };\r\n\r\n        worker.execute();\r\n    }\r\n\r\n    public void buttonStop_ActionPerformed(ActionEvent e) {\r\n        agent.stop();\r\n        buttonShowSolution.setEnabled(false);\r\n        buttonStop.setEnabled(false);\r\n        buttonSolve.setEnabled(true);\r\n    }\r\n\r\n    public void buttonShowSolution_ActionPerformed(ActionEvent e) {\r\n        buttonShowSolution.setEnabled(false);\r\n        buttonStop.setEnabled(false);\r\n        buttonSolve.setEnabled(false);\r\n        SwingWorker worker = new SwingWorker<Void, Void>() {\r\n            @Override\r\n            public Void doInBackground() {\r\n                agent.executeSolution();\r\n                buttonReset.setEnabled(true);\r\n                return null;\r\n            }\r\n\r\n            @Override\r\n            public void done() {\r\n                buttonShowSolution.setEnabled(true);\r\n                buttonSolve.setEnabled(true);\r\n            }\r\n        };\r\n        worker.execute();\r\n    }\r\n\r\n    public void buttonReset_ActionPerformed(ActionEvent e) {\r\n        ga.setState(agent.resetEnvironment());\r\n        buttonShowSolution.setEnabled(true);\r\n        buttonReset.setEnabled(false);\r\n    }\r\n\r\n    private void prepareSearchAlgorithm() {\r\n        if (agent.getSearchMethod() instanceof DepthLimitedSearch) {\r\n            DepthLimitedSearch searchMethod = (DepthLimitedSearch) agent.getSearchMethod();\r\n            searchMethod.setLimit(Integer.parseInt(textFieldSearchParameter.getText()));\r\n        } else if (agent.getSearchMethod() instanceof BeamSearch) {\r\n            BeamSearch searchMethod = (BeamSearch) agent.getSearchMethod();\r\n            searchMethod.setBeamSize(Integer.parseInt(textFieldSearchParameter.getText()));\r\n        }\r\n    }\r\n}\r\n\r\nclass ComboBoxSearchMethods_ActionAdapter implements ActionListener {\r\n\r\n    private final MainFrame adaptee;\r\n\r\n    ComboBoxSearchMethods_ActionAdapter(MainFrame adaptee) {\r\n        this.adaptee = adaptee;\r\n    }\r\n\r\n    @Override\r\n    public void actionPerformed(ActionEvent e) {\r\n        adaptee.comboBoxSearchMethods_ActionPerformed(e);\r\n    }\r\n}\r\n\r\nclass ComboBoxHeuristics_ActionAdapter implements ActionListener {\r\n\r\n    private final MainFrame adaptee;\r\n\r\n    ComboBoxHeuristics_ActionAdapter(MainFrame adaptee) {\r\n        this.adaptee = adaptee;\r\n    }\r\n\r\n    @Override\r\n    public void actionPerformed(ActionEvent e) {\r\n        adaptee.comboBoxHeuristics_ActionPerformed(e);\r\n    }\r\n}\r\n\r\nclass ButtonInitialState_ActionAdapter implements ActionListener {\r\n\r\n    private final MainFrame adaptee;\r\n\r\n    ButtonInitialState_ActionAdapter(MainFrame adaptee) {\r\n        this.adaptee = adaptee;\r\n    }\r\n\r\n    @Override\r\n    public void actionPerformed(ActionEvent e) {\r\n        adaptee.buttonInitialState_ActionPerformed(e);\r\n    }\r\n}\r\n\r\nclass ButtonSolve_ActionAdapter implements ActionListener {\r\n\r\n    private final MainFrame adaptee;\r\n\r\n    ButtonSolve_ActionAdapter(MainFrame adaptee) {\r\n        this.adaptee = adaptee;\r\n    }\r\n\r\n    @Override\r\n    public void actionPerformed(ActionEvent e) {\r\n        adaptee.buttonSolve_ActionPerformed(e);\r\n    }\r\n}\r\n\r\nclass ButtonStop_ActionAdapter implements ActionListener {\r\n\r\n    private final MainFrame adaptee;\r\n\r\n    ButtonStop_ActionAdapter(MainFrame adaptee) {\r\n        this.adaptee = adaptee;\r\n    }\r\n\r\n    @Override\r\n    public void actionPerformed(ActionEvent e) {\r\n        adaptee.buttonStop_ActionPerformed(e);\r\n    }\r\n}\r\n\r\nclass ButtonShowSolution_ActionAdapter implements ActionListener {\r\n\r\n    private final MainFrame adaptee;\r\n\r\n    ButtonShowSolution_ActionAdapter(MainFrame adaptee) {\r\n        this.adaptee = adaptee;\r\n    }\r\n\r\n    @Override\r\n    public void actionPerformed(ActionEvent e) {\r\n        adaptee.buttonShowSolution_ActionPerformed(e);\r\n    }\r\n}\r\n\r\nclass ButtonReset_ActionAdapter implements ActionListener {\r\n\r\n    private final MainFrame adaptee;\r\n\r\n    ButtonReset_ActionAdapter(MainFrame adaptee) {\r\n        this.adaptee = adaptee;\r\n    }\r\n\r\n    @Override\r\n    public void actionPerformed(ActionEvent e) {\r\n        adaptee.buttonReset_ActionPerformed(e);\r\n    }\r\n}\r\n\r\nclass TextFieldSearchParameter_KeyAdapter implements KeyListener {\r\n\r\n    private final MainFrame adaptee;\r\n\r\n    TextFieldSearchParameter_KeyAdapter(MainFrame adaptee) {\r\n        this.adaptee = adaptee;\r\n    }\r\n\r\n    @Override\r\n    public void keyReleased(KeyEvent e) {\r\n    }\r\n\r\n    @Override\r\n    public void keyPressed(KeyEvent e) {\r\n    }\r\n\r\n    @Override\r\n    public void keyTyped(KeyEvent e) {\r\n        char c = e.getKeyChar();\r\n        if (!Character.isDigit(c) || c == KeyEvent.VK_BACK_SPACE || c == KeyEvent.VK_DELETE) {\r\n            e.consume();\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/gui/MainFrame.java b/src/gui/MainFrame.java
+--- a/src/gui/MainFrame.java	(revision 55d6a30f5cf09fbb6ea714cbd6236a10e00b9d56)
++++ b/src/gui/MainFrame.java	(date 1655840440593)
+@@ -50,7 +50,7 @@
+             {' ','S',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
+     };
+ 
+-    MummyMazeState initialState = new MummyMazeState(initialMatrix);
++    MummyMazeState initialState = new MummyMazeState(initialMatrix, 0, 0, null);
+ 
+ 
+ 
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"7a091b84-42a2-4966-937e-8409e68ac26b\" name=\"Default\" comment=\"Added movement to GameArea\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/gui/MainFrame.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/gui/MainFrame.java\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"1ObqOLKkVgswHXnjbCcqq6GZ9SZ\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"SHARE_PROJECT_CONFIGURATION_FILES\" value=\"true\" />\r\n    <property name=\"WebServerToolWindowFactoryState\" value=\"false\" />\r\n    <property name=\"aspect.path.notification.shown\" value=\"true\" />\r\n    <property name=\"last_opened_file_path\" value=\"$PROJECT_DIR$/../../../IA/NeuralNetworks_CLASS\" />\r\n    <property name=\"nodejs_package_manager_path\" value=\"npm\" />\r\n    <property name=\"project.structure.last.edited\" value=\"Project\" />\r\n    <property name=\"project.structure.proportion\" value=\"0.0\" />\r\n    <property name=\"project.structure.side.proportion\" value=\"0.0\" />\r\n    <property name=\"vue.rearranger.settings.migration\" value=\"true\" />\r\n  </component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CopyFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\vcpse\\Desktop\\Search_Projecto\\src\" />\r\n      <recent name=\"D:\\ESCOLA\\IA\\Search_Projecto\\src\\mummymaze\" />\r\n      <recent name=\"D:\\ESCOLA\\IA\\Search_Projecto\\src\\images\" />\r\n      <recent name=\"C:\\Users\\Anabela\\IdeaProjects\\Search\\src\" />\r\n    </key>\r\n    <key name=\"CopyClassDialog.RECENTS_KEY\">\r\n      <recent name=\"mummymaze\" />\r\n      <recent name=\"utils\" />\r\n      <recent name=\"gui\" />\r\n      <recent name=\"eightpuzzle\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"Main\" type=\"Application\" factoryName=\"Application\" temporary=\"true\">\r\n      <option name=\"ALTERNATIVE_JRE_PATH\" value=\"17\" />\r\n      <option name=\"ALTERNATIVE_JRE_PATH_ENABLED\" value=\"true\" />\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"gui.Main\" />\r\n      <module name=\"untitled104\" />\r\n      <RunnerSettings RunnerId=\"Run\" />\r\n      <ConfigurationWrapper RunnerId=\"Run\" />\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration default=\"true\" type=\"ArquillianJUnit\" factoryName=\"\" nameIsGenerated=\"true\">\r\n      <option name=\"arquillianRunConfiguration\">\r\n        <value>\r\n          <option name=\"containerStateName\" value=\"\" />\r\n        </value>\r\n      </option>\r\n      <option name=\"TEST_OBJECT\" value=\"class\" />\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Application.Main\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"SvnConfiguration\">\r\n    <configuration />\r\n  </component>\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"7a091b84-42a2-4966-937e-8409e68ac26b\" name=\"Default\" comment=\"\" />\r\n      <created>1521195166059</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1521195166059</updated>\r\n      <workItem from=\"1582565107338\" duration=\"11255000\" />\r\n      <workItem from=\"1583168216627\" duration=\"1607000\" />\r\n      <workItem from=\"1583183963137\" duration=\"5717000\" />\r\n      <workItem from=\"1583255433033\" duration=\"1164000\" />\r\n      <workItem from=\"1614862104320\" duration=\"1238000\" />\r\n      <workItem from=\"1615309114932\" duration=\"3287000\" />\r\n      <workItem from=\"1615363748117\" duration=\"3674000\" />\r\n      <workItem from=\"1615905155525\" duration=\"12625000\" />\r\n      <workItem from=\"1615939203426\" duration=\"47000\" />\r\n      <workItem from=\"1615939285171\" duration=\"1225000\" />\r\n      <workItem from=\"1615982254076\" duration=\"2220000\" />\r\n      <workItem from=\"1616151480376\" duration=\"4795000\" />\r\n      <workItem from=\"1616173592479\" duration=\"5095000\" />\r\n      <workItem from=\"1616192780973\" duration=\"103000\" />\r\n      <workItem from=\"1616193463456\" duration=\"8528000\" />\r\n      <workItem from=\"1616454526095\" duration=\"4926000\" />\r\n      <workItem from=\"1616581685651\" duration=\"1475000\" />\r\n      <workItem from=\"1616709690693\" duration=\"32000\" />\r\n      <workItem from=\"1616711233705\" duration=\"1500000\" />\r\n      <workItem from=\"1646695406185\" duration=\"667000\" />\r\n      <workItem from=\"1648500465242\" duration=\"674000\" />\r\n      <workItem from=\"1649112440091\" duration=\"375000\" />\r\n      <workItem from=\"1650908521009\" duration=\"7733000\" />\r\n      <workItem from=\"1651527208800\" duration=\"652000\" />\r\n      <workItem from=\"1653939876058\" duration=\"9749000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"Added scorpion\">\r\n      <created>1653941523994</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1653941523994</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"Added detected colision to unlock doors, fall in trap, colision between NPCS&#10;Added replenish for older positions (check if old position was keys or traps)\">\r\n      <created>1653944632759</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1653944632759</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"Added movement to GameArea\">\r\n      <created>1653951711179</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1653951711179</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"4\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n    <option name=\"oldMeFiltersMigrated\" value=\"true\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Added scorpion\" />\r\n    <MESSAGE value=\"Added detected colision to unlock doors, fall in trap, colision between NPCS&#10;Added replenish for older positions (check if old position was keys or traps)\" />\r\n    <MESSAGE value=\"Added movement to GameArea\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Added movement to GameArea\" />\r\n  </component>\r\n  <component name=\"XDebuggerManager\">\r\n    <breakpoint-manager>\r\n      <breakpoints>\r\n        <line-breakpoint enabled=\"true\" type=\"java-line\">\r\n          <url>file://$PROJECT_DIR$/src/mummymaze/MummyMazeState.java</url>\r\n          <line>179</line>\r\n          <option name=\"timeStamp\" value=\"3\" />\r\n        </line-breakpoint>\r\n        <line-breakpoint enabled=\"true\" type=\"java-line\">\r\n          <url>file://$PROJECT_DIR$/src/mummymaze/MummyMazeState.java</url>\r\n          <line>128</line>\r\n          <option name=\"timeStamp\" value=\"4\" />\r\n        </line-breakpoint>\r\n      </breakpoints>\r\n    </breakpoint-manager>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 55d6a30f5cf09fbb6ea714cbd6236a10e00b9d56)
++++ b/.idea/workspace.xml	(date 1655841633173)
+@@ -4,6 +4,10 @@
+     <list default="true" id="7a091b84-42a2-4966-937e-8409e68ac26b" name="Default" comment="Added movement to GameArea">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/src/gui/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/MainFrame.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/mummymaze/MummyMazeAgent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mummymaze/MummyMazeAgent.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/mummymaze/MummyMazeProblem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mummymaze/MummyMazeProblem.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/mummymaze/MummyMazeState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mummymaze/MummyMazeState.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/searchmethods/BreadthFirstSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/searchmethods/BreadthFirstSearch.java" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -23,7 +27,7 @@
+     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+     <property name="WebServerToolWindowFactoryState" value="false" />
+     <property name="aspect.path.notification.shown" value="true" />
+-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../IA/NeuralNetworks_CLASS" />
++    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Search_2_Optimizado" />
+     <property name="nodejs_package_manager_path" value="npm" />
+     <property name="project.structure.last.edited" value="Project" />
+     <property name="project.structure.proportion" value="0.0" />
+@@ -52,17 +56,6 @@
+       <module name="untitled104" />
+       <RunnerSettings RunnerId="Run" />
+       <ConfigurationWrapper RunnerId="Run" />
+-      <method v="2">
+-        <option name="Make" enabled="true" />
+-      </method>
+-    </configuration>
+-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+-      <option name="arquillianRunConfiguration">
+-        <value>
+-          <option name="containerStateName" value="" />
+-        </value>
+-      </option>
+-      <option name="TEST_OBJECT" value="class" />
+       <method v="2">
+         <option name="Make" enabled="true" />
+       </method>
+@@ -108,7 +101,9 @@
+       <workItem from="1649112440091" duration="375000" />
+       <workItem from="1650908521009" duration="7733000" />
+       <workItem from="1651527208800" duration="652000" />
+-      <workItem from="1653939876058" duration="9749000" />
++      <workItem from="1653939876058" duration="9897000" />
++      <workItem from="1655215345675" duration="23000" />
++      <workItem from="1655838012355" duration="3586000" />
+     </task>
+     <task id="LOCAL-00001" summary="Added scorpion">
+       <created>1653941523994</created>
+@@ -131,7 +126,21 @@
+       <option name="project" value="LOCAL" />
+       <updated>1653951711179</updated>
+     </task>
+-    <option name="localTasksCounter" value="4" />
++    <task id="LOCAL-00004" summary="Added movement to GameArea">
++      <created>1653951830553</created>
++      <option name="number" value="00004" />
++      <option name="presentableId" value="LOCAL-00004" />
++      <option name="project" value="LOCAL" />
++      <updated>1653951830553</updated>
++    </task>
++    <task id="LOCAL-00005" summary="Added movement to GameArea">
++      <created>1653951865495</created>
++      <option name="number" value="00005" />
++      <option name="presentableId" value="LOCAL-00005" />
++      <option name="project" value="LOCAL" />
++      <updated>1653951865495</updated>
++    </task>
++    <option name="localTasksCounter" value="6" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -160,13 +169,18 @@
+       <breakpoints>
+         <line-breakpoint enabled="true" type="java-line">
+           <url>file://$PROJECT_DIR$/src/mummymaze/MummyMazeState.java</url>
+-          <line>179</line>
+-          <option name="timeStamp" value="3" />
++          <line>238</line>
++          <option name="timeStamp" value="10" />
+         </line-breakpoint>
+         <line-breakpoint enabled="true" type="java-line">
+           <url>file://$PROJECT_DIR$/src/mummymaze/MummyMazeState.java</url>
+-          <line>128</line>
+-          <option name="timeStamp" value="4" />
++          <line>183</line>
++          <option name="timeStamp" value="11" />
++        </line-breakpoint>
++        <line-breakpoint enabled="true" type="java-line">
++          <url>file://$PROJECT_DIR$/src/mummymaze/MummyMazeState.java</url>
++          <line>117</line>
++          <option name="timeStamp" value="12" />
+         </line-breakpoint>
+       </breakpoints>
+     </breakpoint-manager>
+Index: src/mummymaze/MummyMazeProblem.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package mummymaze;\r\n\r\nimport agent.Action;\r\nimport agent.Problem;\r\n\r\nimport java.util.LinkedList;\r\nimport java.util.List;\r\n\r\npublic class MummyMazeProblem extends Problem<MummyMazeState> {\r\n\r\n    protected List<Action> actions;\r\n\r\n    public MummyMazeProblem(MummyMazeState initialState) {\r\n        super(initialState);\r\n        actions = new LinkedList<Action>() {{\r\n            add(new ActionDown());\r\n            add(new ActionUp());\r\n            add(new ActionRight());\r\n            add(new ActionLeft());\r\n            add(new ActionStand());\r\n        }};\r\n    }\r\n\r\n    @Override\r\n    public List<Action<MummyMazeState>> getActions(MummyMazeState state) {\r\n        List<Action<MummyMazeState>> possibleActions = new LinkedList<>();\r\n\r\n\r\n\r\n        for (Action action : actions) {\r\n            if (action.isValid(state)) {\r\n                possibleActions.add(action);\r\n            }\r\n        }\r\n        return possibleActions;\r\n    }\r\n\r\n    @Override\r\n    public MummyMazeState getSuccessor(MummyMazeState state, Action action){\r\n        MummyMazeState successor = state.clone();\r\n        action.execute(successor);\r\n        return successor;\r\n    }\r\n\r\n    @Override\r\n    public boolean isGoal(MummyMazeState state) {\r\n        return state.checkGoal();\r\n    }\r\n\r\n    @Override\r\n    public double computePathCost(List<Action> path) {\r\n        return path.size();\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/mummymaze/MummyMazeProblem.java b/src/mummymaze/MummyMazeProblem.java
+--- a/src/mummymaze/MummyMazeProblem.java	(revision 55d6a30f5cf09fbb6ea714cbd6236a10e00b9d56)
++++ b/src/mummymaze/MummyMazeProblem.java	(date 1655841324638)
+@@ -25,7 +25,9 @@
+     public List<Action<MummyMazeState>> getActions(MummyMazeState state) {
+         List<Action<MummyMazeState>> possibleActions = new LinkedList<>();
+ 
+-
++        //if(state.isGameOver()){
++        //    return possibleActions;
++        //}
+ 
+         for (Action action : actions) {
+             if (action.isValid(state)) {
+Index: src/mummymaze/MummyMazeAgent.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package mummymaze;\r\n\r\nimport agent.Agent;\r\n\r\nimport java.io.File;\r\nimport java.io.IOException;\r\n\r\npublic class MummyMazeAgent extends Agent<MummyMazeState>{\r\n\r\n    protected MummyMazeState initialEnvironment;\r\n\r\n    public MummyMazeAgent(MummyMazeState environemt) {\r\n        super(environemt);\r\n        initialEnvironment = (MummyMazeState) environemt.clone();\r\n        heuristics.add(new HeuristicTileDistance());\r\n        heuristics.add(new HeuristicTilesOutOfPlace());\r\n        heuristic = heuristics.get(0);\r\n    }\r\n            \r\n    public MummyMazeState resetEnvironment(){\r\n        environment = (MummyMazeState) initialEnvironment.clone();\r\n        return environment;\r\n    }\r\n                 \r\n    public MummyMazeState readInitialStateFromFile(File file) throws IOException {\r\n        java.util.Scanner scanner = new java.util.Scanner(file).useDelimiter(\"(?<=.)\");\r\n\r\n        char[][] matrix = new char [13][13];\r\n        \r\n        for (int i = 0; i < 12; i++) {\r\n            for (int j = 0; j < 12; j++) {\r\n                matrix[i][j] = scanner.next().toCharArray()[0];\r\n            }\r\n            scanner.nextLine();\r\n        }\r\n\r\n        initialEnvironment = new MummyMazeState(matrix);\r\n        resetEnvironment();\r\n        return environment;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/mummymaze/MummyMazeAgent.java b/src/mummymaze/MummyMazeAgent.java
+--- a/src/mummymaze/MummyMazeAgent.java	(revision 55d6a30f5cf09fbb6ea714cbd6236a10e00b9d56)
++++ b/src/mummymaze/MummyMazeAgent.java	(date 1655840304006)
+@@ -1,9 +1,11 @@
+ package mummymaze;
+ 
+ import agent.Agent;
++import utils.Coordinates;
+ 
+ import java.io.File;
+ import java.io.IOException;
++import java.util.LinkedList;
+ 
+ public class MummyMazeAgent extends Agent<MummyMazeState>{
+ 
+@@ -21,20 +23,32 @@
+         environment = (MummyMazeState) initialEnvironment.clone();
+         return environment;
+     }
+-                 
++
+     public MummyMazeState readInitialStateFromFile(File file) throws IOException {
+-        java.util.Scanner scanner = new java.util.Scanner(file).useDelimiter("(?<=.)");
++        java.util.Scanner scanner = new java.util.Scanner(file);
++        LinkedList<Coordinates> traps= new LinkedList<>();
+ 
+         char[][] matrix = new char [13][13];
+-        
+-        for (int i = 0; i < 12; i++) {
+-            for (int j = 0; j < 12; j++) {
+-                matrix[i][j] = scanner.next().toCharArray()[0];
++        int KeyLine = 0;
++        int KeyColumm = 0;
++
++        for (int i = 0; i < 13; i++) {
++            matrix[i]=scanner.nextLine().toCharArray();
++
++            for (int j = 0; j < 13; j++) {
++                switch (matrix[i][j]){
++                    case 'A' :              // Trap
++                        traps.add(new Coordinates(i,j)) ;
++
++                        break;
++                    case 'C' :              // Key
++                        KeyLine = i;
++                        KeyColumm = j;
++                        break;
++                }
+             }
+-            scanner.nextLine();
+         }
+-
+-        initialEnvironment = new MummyMazeState(matrix);
++        initialEnvironment = new MummyMazeState(matrix,KeyLine,KeyColumm,traps);
+         resetEnvironment();
+         return environment;
+     }
+Index: src/searchmethods/BreadthFirstSearch.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package searchmethods;\r\n\r\nimport agent.Action;\r\nimport agent.Problem;\r\nimport agent.Solution;\r\nimport agent.State;\r\nimport java.util.List;\r\nimport utils.NodeLinkedList;\r\n\r\npublic class BreadthFirstSearch extends GraphSearch<NodeLinkedList> {\r\n\r\n    public BreadthFirstSearch() {\r\n        frontier = new NodeLinkedList();\r\n    }\r\n\r\n    /**\r\n     * In Breadth First Search, we can return the solution when we generate\r\n     * a goal state (we don't need to add it to the frontier)\r\n     * In this (optimized) version we are assuming that the initial state is never a goal state.\r\n     * If this could happen, we should have an initial condition to verify that.\r\n     */\r\n    @Override\r\n    protected Solution graphSearch(Problem problem) {\r\n        frontier.clear();\r\n        explored.clear();\r\n        frontier.add(new Node(problem.getInitialState()));\r\n\r\n        while (!frontier.isEmpty() && !stopped) {\r\n            Node n = frontier.poll();\r\n            State state = n.getState();\r\n\r\n            explored.add(state);\r\n            List<Action> actions = problem.getActions(state);\r\n            for(Action action : actions){\r\n                State successor = problem.getSuccessor(state, action);\r\n                if (problem.isGoal(successor)) {\r\n                    Node successorNode = new Node(successor, n);\r\n                    return new Solution(problem, successorNode);\r\n                }\r\n                addSuccessorToFrontier(successor, n);\r\n            }\r\n            computeStatistics(actions.size());\r\n        }\r\n        return null;\r\n    }\r\n\r\n    @Override\r\n    public void addSuccessorToFrontier(State successor, Node parent) {\r\n        if (!(frontier.containsState(successor) || explored.contains(successor))) {\r\n            frontier.addLast(new Node(successor, parent));\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public String toString() {\r\n        return \"Breadth first search\";\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/searchmethods/BreadthFirstSearch.java b/src/searchmethods/BreadthFirstSearch.java
+--- a/src/searchmethods/BreadthFirstSearch.java	(revision 55d6a30f5cf09fbb6ea714cbd6236a10e00b9d56)
++++ b/src/searchmethods/BreadthFirstSearch.java	(date 1655841349635)
+@@ -13,37 +13,6 @@
+         frontier = new NodeLinkedList();
+     }
+ 
+-    /**
+-     * In Breadth First Search, we can return the solution when we generate
+-     * a goal state (we don't need to add it to the frontier)
+-     * In this (optimized) version we are assuming that the initial state is never a goal state.
+-     * If this could happen, we should have an initial condition to verify that.
+-     */
+-    @Override
+-    protected Solution graphSearch(Problem problem) {
+-        frontier.clear();
+-        explored.clear();
+-        frontier.add(new Node(problem.getInitialState()));
+-
+-        while (!frontier.isEmpty() && !stopped) {
+-            Node n = frontier.poll();
+-            State state = n.getState();
+-
+-            explored.add(state);
+-            List<Action> actions = problem.getActions(state);
+-            for(Action action : actions){
+-                State successor = problem.getSuccessor(state, action);
+-                if (problem.isGoal(successor)) {
+-                    Node successorNode = new Node(successor, n);
+-                    return new Solution(problem, successorNode);
+-                }
+-                addSuccessorToFrontier(successor, n);
+-            }
+-            computeStatistics(actions.size());
+-        }
+-        return null;
+-    }
+-
+     @Override
+     public void addSuccessorToFrontier(State successor, Node parent) {
+         if (!(frontier.containsState(successor) || explored.contains(successor))) {

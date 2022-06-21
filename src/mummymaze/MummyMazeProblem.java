@@ -25,6 +25,10 @@ public class MummyMazeProblem extends Problem<MummyMazeState> {
     public List<Action<MummyMazeState>> getActions(MummyMazeState state) {
         List<Action<MummyMazeState>> possibleActions = new LinkedList<>();
 
+        if(state.isGameOver()){
+            return possibleActions;
+        }
+
         for (Action action : actions) {
             if (action.isValid(state)) {
                 possibleActions.add(action);

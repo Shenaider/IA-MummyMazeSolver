@@ -1,9 +1,11 @@
 package mummymaze;
 
 import agent.Agent;
+import utils.Coordinates;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 
 public class MummyMazeAgent extends Agent<MummyMazeState>{
 
@@ -21,20 +23,32 @@ public class MummyMazeAgent extends Agent<MummyMazeState>{
         environment = (MummyMazeState) initialEnvironment.clone();
         return environment;
     }
-                 
+
     public MummyMazeState readInitialStateFromFile(File file) throws IOException {
-        java.util.Scanner scanner = new java.util.Scanner(file).useDelimiter("(?<=.)");
+        java.util.Scanner scanner = new java.util.Scanner(file);
+        LinkedList<Coordinates> traps= new LinkedList<>();
 
         char[][] matrix = new char [13][13];
-        
-        for (int i = 0; i < 12; i++) {
-            for (int j = 0; j < 12; j++) {
-                matrix[i][j] = scanner.next().toCharArray()[0];
-            }
-            scanner.nextLine();
-        }
+        int KeyLine = 0;
+        int KeyColumm = 0;
 
-        initialEnvironment = new MummyMazeState(matrix);
+        for (int i = 0; i < 13; i++) {
+            matrix[i]=scanner.nextLine().toCharArray();
+
+            for (int j = 0; j < 13; j++) {
+                switch (matrix[i][j]){
+                    case 'A' :              // Trap
+                        traps.add(new Coordinates(i,j)) ;
+
+                        break;
+                    case 'C' :              // Key
+                        KeyLine = i;
+                        KeyColumm = j;
+                        break;
+                }
+            }
+        }
+        initialEnvironment = new MummyMazeState(matrix,KeyLine,KeyColumm,traps);
         resetEnvironment();
         return environment;
     }
