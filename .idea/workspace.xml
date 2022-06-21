@@ -1,39 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7a091b84-42a2-4966-937e-8409e68ac26b" name="Default" comment="Added movement to GameArea">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_31_05_2022_09_44_[Default]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_31_05_2022_09_44__Default_.xml" beforeDir="false" />
+    <list default="true" id="7a091b84-42a2-4966-937e-8409e68ac26b" name="Default" comment="Added movement with logic">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nivel1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/nivel1.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nivel10.txt" beforeDir="false" afterPath="$PROJECT_DIR$/nivel10.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nivel11.txt" beforeDir="false" afterPath="$PROJECT_DIR$/nivel11.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nivel12.txt" beforeDir="false" afterPath="$PROJECT_DIR$/nivel12.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nivel13.txt" beforeDir="false" afterPath="$PROJECT_DIR$/nivel13.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nivel14.txt" beforeDir="false" afterPath="$PROJECT_DIR$/nivel14.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nivel15.txt" beforeDir="false" afterPath="$PROJECT_DIR$/nivel15.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nivel2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/nivel2.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nivel3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/nivel3.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nivel4.txt" beforeDir="false" afterPath="$PROJECT_DIR$/nivel4.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nivel5.txt" beforeDir="false" afterPath="$PROJECT_DIR$/nivel5.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nivel6.txt" beforeDir="false" afterPath="$PROJECT_DIR$/nivel6.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nivel7.txt" beforeDir="false" afterPath="$PROJECT_DIR$/nivel7.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nivel8.txt" beforeDir="false" afterPath="$PROJECT_DIR$/nivel8.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nivel9.txt" beforeDir="false" afterPath="$PROJECT_DIR$/nivel9.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/untitled104/gui/MainFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/gui/MainFrame.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeAgent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeAgent.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeProblem.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeProblem.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/untitled104/gui/MummyMazeTableModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/gui/MummyMazeTableModel.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeState.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeState.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/untitled104/searchmethods/BreadthFirstSearch.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/searchmethods/BreadthFirstSearch.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/puzzle_28.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/puzzle_3.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/puzzle_30.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/MainFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/MummyMazeTableModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/MummyMazeTableModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mummymaze/MummyMazeAgent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mummymaze/MummyMazeAgent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mummymaze/MummyMazeProblem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mummymaze/MummyMazeProblem.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/mummymaze/MummyMazeState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mummymaze/MummyMazeState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/searchmethods/BreadthFirstSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/searchmethods/BreadthFirstSearch.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,7 +102,7 @@
       <workItem from="1653939876058" duration="9897000" />
       <workItem from="1655215345675" duration="23000" />
       <workItem from="1655838012355" duration="4809000" />
-      <workItem from="1655842921142" duration="8517000" />
+      <workItem from="1655842921142" duration="11083000" />
     </task>
     <task id="LOCAL-00001" summary="Added scorpion">
       <created>1653941523994</created>
@@ -167,7 +139,14 @@
       <option name="project" value="LOCAL" />
       <updated>1653951865495</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Added movement with logic">
+      <created>1655852192009</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1655852192009</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -189,14 +168,15 @@
     <MESSAGE value="Added scorpion" />
     <MESSAGE value="Added detected colision to unlock doors, fall in trap, colision between NPCS&#10;Added replenish for older positions (check if old position was keys or traps)" />
     <MESSAGE value="Added movement to GameArea" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added movement to GameArea" />
+    <MESSAGE value="Added movement with logic" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added movement with logic" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/mummymaze/MummyMazeState.java</url>
-          <line>240</line>
+          <line>261</line>
           <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
