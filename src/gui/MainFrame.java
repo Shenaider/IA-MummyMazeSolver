@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import javax.swing.BorderFactory;
@@ -50,7 +51,7 @@ public class MainFrame extends JFrame {
             {' ','S',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
     };
 
-    MummyMazeState initialState = new MummyMazeState(initialMatrix, 0, 0, null);
+    MummyMazeState initialState = new MummyMazeState(initialMatrix, 0, 0, new LinkedList<>());
 
 
 

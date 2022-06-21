@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7a091b84-42a2-4966-937e-8409e68ac26b" name="Default" comment="Added movement with logic">
+    <list default="true" id="7a091b84-42a2-4966-937e-8409e68ac26b" name="Default" comment="Level 16 fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/untitled104/gui/MummyMazeTableModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/gui/MummyMazeTableModel.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeState.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeState.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/MainFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/mummymaze/MummyMazeState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mummymaze/MummyMazeState.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -102,7 +102,7 @@
       <workItem from="1653939876058" duration="9897000" />
       <workItem from="1655215345675" duration="23000" />
       <workItem from="1655838012355" duration="4809000" />
-      <workItem from="1655842921142" duration="11083000" />
+      <workItem from="1655842921142" duration="12198000" />
     </task>
     <task id="LOCAL-00001" summary="Added scorpion">
       <created>1653941523994</created>
@@ -146,7 +146,14 @@
       <option name="project" value="LOCAL" />
       <updated>1655852192009</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Level 16 fix">
+      <created>1655854555617</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1655854555617</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -169,17 +176,21 @@
     <MESSAGE value="Added detected colision to unlock doors, fall in trap, colision between NPCS&#10;Added replenish for older positions (check if old position was keys or traps)" />
     <MESSAGE value="Added movement to GameArea" />
     <MESSAGE value="Added movement with logic" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added movement with logic" />
+    <MESSAGE value="Level 16 fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="Level 16 fix" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/mummymaze/MummyMazeState.java</url>
-          <line>261</line>
+          <line>257</line>
           <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/IA_MummyMazeSolver$Main.ic" NAME="Main Coverage Results" MODIFIED="1655855029313" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

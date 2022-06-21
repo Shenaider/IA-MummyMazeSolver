@@ -47,14 +47,8 @@ public class MummyMazeState extends State implements Cloneable {
                     case 'V':
                         mumiasVermelhas.add(new Coordinates(j,i));
                         break;
-                    case 'A':
-                        armadilhas = traps;
-                        break;
                     case 'E':
                         escorpioes.add(new Coordinates(j,i));
-                        break;
-                    case 'C':
-                        chave = new Coordinates(KeyLine,KeyColumm);
                         break;
                     case '=':
                     case '"':
@@ -63,6 +57,8 @@ public class MummyMazeState extends State implements Cloneable {
                 }
             }
         }
+        armadilhas = traps;
+        chave = new Coordinates(KeyLine,KeyColumm);
     }
 
     @Override
