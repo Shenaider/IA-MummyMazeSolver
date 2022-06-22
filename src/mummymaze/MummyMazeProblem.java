@@ -9,6 +9,7 @@ import java.util.List;
 public class MummyMazeProblem extends Problem<MummyMazeState> {
 
     protected List<Action> actions;
+    private MummyMazeState goalState;
 
     public MummyMazeProblem(MummyMazeState initialState) {
         super(initialState);
@@ -47,6 +48,13 @@ public class MummyMazeProblem extends Problem<MummyMazeState> {
     @Override
     public boolean isGoal(MummyMazeState state) {
         return state.checkGoal();
+    }
+
+    public MummyMazeState getGoalstate(MummyMazeState state){
+        if(goalState!=null){
+            return state;
+        }
+        return null;
     }
 
     @Override

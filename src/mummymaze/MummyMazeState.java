@@ -21,8 +21,8 @@ public class MummyMazeState extends State implements Cloneable {
     private LinkedList<Coordinates> portas_abertas = new LinkedList<>();
     private LinkedList<Coordinates> portas_fechadas = new LinkedList<>();
     private LinkedList<Coordinates> armadilhas = new LinkedList<>();
-    private Coordinates hero;
-    private Coordinates exit;
+    public Coordinates hero;
+    public Coordinates exit;
 
     public char[][] getMatrix() {
         return matrix;
@@ -76,7 +76,7 @@ public class MummyMazeState extends State implements Cloneable {
         int column = entity.getColumn();
         if(line == 1){
             if(matrix[line-1][column] == 'S' && isHero){
-                return true;
+                hero.setLine(line-1);
             }
             return false;
         }
@@ -99,7 +99,7 @@ public class MummyMazeState extends State implements Cloneable {
         int column = entity.getColumn();
         if(column == 11){
             if(matrix[line][column+1] == 'S' && isHero){
-                return true;
+                hero.setColumn(column+1);
             }
             return false;
         }
@@ -122,7 +122,7 @@ public class MummyMazeState extends State implements Cloneable {
         int column = entity.getColumn();
         if(line == 11){
             if(matrix[line+1][column] == 'S' && isHero){
-                return true;
+                hero.setLine(line+1);
             }
             return false;
         }
@@ -145,7 +145,7 @@ public class MummyMazeState extends State implements Cloneable {
         int column = entity.getColumn();
         if(column == 1){
             if(matrix[line][column-1] == 'S' && isHero){
-                return true;
+                hero.setColumn(column-1);
             }
             return false;
         }
@@ -565,5 +565,35 @@ public class MummyMazeState extends State implements Cloneable {
 
     public boolean isGameOver(){
         return gameOver;
+    }
+
+    public double computeTilesOutOfPlace(MummyMazeState finalState) {
+        double h = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                if (this.matrix[i][j] != 0 && this.matrix[i][j] != finalState.matrix[i][j]) {
+                    h++;
+                }
+            }
+        }
+        return h;
+    }
+
+    public double computeGoalDistance(MummyMazeState state){
+        return Math.abs(state.exit.getLine() -state.hero.getLine()) +Math.abs(state.exit.getColumn() -state.hero.getColumn());
+    }
+
+    public double computeTileDistances(MummyMazeState state) {
+        double h = 0;
+        if(state==null){
+            return h;
+        }
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                if (this.matrix[i][j] != 0) {
+                }
+            }
+        }
+        return h;
     }
 }

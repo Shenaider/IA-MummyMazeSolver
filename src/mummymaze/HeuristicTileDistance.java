@@ -6,8 +6,8 @@ public class HeuristicTileDistance extends Heuristic<MummyMazeProblem, MummyMaze
 
     @Override
     public double compute(MummyMazeState state){
-        //return state.computeTileDistances(problem.getGoalState());
-        return 0;
+        problem.isGoal(state);
+        return state.computeTileDistances(problem.getGoalstate(state));
     }
     
     @Override

@@ -1,10 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7a091b84-42a2-4966-937e-8409e68ac26b" name="Default" comment="Level 16 fix">
+    <list default="true" id="7a091b84-42a2-4966-937e-8409e68ac26b" name="Default" comment="Fixed traps added to matrix">
+      <change afterPath="$PROJECT_DIR$/src/mummymaze/HeuristicGoalDistance.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/untitled104/gui/ButtonInitialState_ActionAdapter.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/gui/ButtonInitialState_ActionAdapter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/untitled104/gui/ButtonReset_ActionAdapter.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/gui/ButtonReset_ActionAdapter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/untitled104/gui/ButtonShowSolution_ActionAdapter.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/gui/ButtonShowSolution_ActionAdapter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/untitled104/gui/ButtonSolve_ActionAdapter.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/gui/ButtonSolve_ActionAdapter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/untitled104/gui/ButtonStop_ActionAdapter.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/gui/ButtonStop_ActionAdapter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/untitled104/gui/ComboBoxHeuristics_ActionAdapter.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/gui/ComboBoxHeuristics_ActionAdapter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/untitled104/gui/ComboBoxSearchMethods_ActionAdapter.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/gui/ComboBoxSearchMethods_ActionAdapter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/untitled104/gui/MainFrame$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/gui/MainFrame$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/untitled104/gui/MainFrame$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/gui/MainFrame$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/untitled104/gui/MainFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/gui/MainFrame.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/untitled104/gui/TextFieldSearchParameter_KeyAdapter.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/gui/TextFieldSearchParameter_KeyAdapter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/untitled104/mummymaze/HeuristicTileDistance.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/mummymaze/HeuristicTileDistance.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/untitled104/mummymaze/HeuristicTilesOutOfPlace.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/mummymaze/HeuristicTilesOutOfPlace.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeAgent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeAgent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeProblem$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeProblem$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeProblem.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeProblem.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeState.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/untitled104/mummymaze/MummyMazeState.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/MainFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/mummymaze/HeuristicTileDistance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mummymaze/HeuristicTileDistance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/mummymaze/HeuristicTilesOutOfPlace.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mummymaze/HeuristicTilesOutOfPlace.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/mummymaze/MummyMazeAgent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mummymaze/MummyMazeAgent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/mummymaze/MummyMazeProblem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mummymaze/MummyMazeProblem.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/mummymaze/MummyMazeState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/mummymaze/MummyMazeState.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -25,7 +45,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Search_2_Optimizado" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../IA/IA_Projeto_2160793_2202318" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
@@ -54,6 +74,17 @@
       <module name="untitled104" />
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Run" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -102,7 +133,7 @@
       <workItem from="1653939876058" duration="9897000" />
       <workItem from="1655215345675" duration="23000" />
       <workItem from="1655838012355" duration="4809000" />
-      <workItem from="1655842921142" duration="12198000" />
+      <workItem from="1655842921142" duration="13832000" />
     </task>
     <task id="LOCAL-00001" summary="Added scorpion">
       <created>1653941523994</created>
@@ -153,7 +184,14 @@
       <option name="project" value="LOCAL" />
       <updated>1655854555617</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Fixed traps added to matrix">
+      <created>1655855624340</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1655855624340</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -177,18 +215,8 @@
     <MESSAGE value="Added movement to GameArea" />
     <MESSAGE value="Added movement with logic" />
     <MESSAGE value="Level 16 fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="Level 16 fix" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/mummymaze/MummyMazeState.java</url>
-          <line>257</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Fixed traps added to matrix" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed traps added to matrix" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/IA_MummyMazeSolver$Main.ic" NAME="Main Coverage Results" MODIFIED="1655855029313" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
